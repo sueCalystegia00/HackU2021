@@ -24,7 +24,7 @@
     <p>Message is: {{ theirID }}</p>
 
     <button v-on:click="makecall">発信</button>
-    <video id="their-video" width="400px" autoplay muted playsinline></video>
+    <video id="their-video" width="400px" autoplay playsinline></video>
     
   </div>
 </template>
