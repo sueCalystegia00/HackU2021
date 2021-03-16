@@ -44,8 +44,8 @@ export default {
       selectedVideo: '', // 使用するカメラデバイス
       peerID: '', // ユーザのpeerID
       theirID: '',  // 相手のpeerID
-      localStream: null,
-      mediaConnection: null,
+      localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
+      mediaConnection: null,  // 通話接続情報
     }
   },
 
