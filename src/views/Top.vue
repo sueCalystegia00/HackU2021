@@ -15,9 +15,6 @@ export default {
       userName: 'hello'
     };
   },
-  created() {
-    // this.userName = firebase.auth.
-  },
   methods: {
     signUp() {
       var provider = new firebase.auth.GoogleAuthProvider();
@@ -26,7 +23,7 @@ export default {
         .signInWithPopup(provider)
         .then((obj) => {
           alert("Create account: " + obj.user.displayName);
-          this.$router.push("/");
+          this.$router.push("/fireStoreTest");
         })
         .catch((error) => alert(error.message));
     },

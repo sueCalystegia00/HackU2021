@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import firebase from 'firebase'
 import CallTest from '../views/CallTest.vue'
 import Top from '../views/Top'
+import FireStoreTest from '../views/FireStoreTest'
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,12 @@ const routes = [
     path: '/top',
     name: 'Top',
     component: Top
+  },
+  {
+    path: '/fireStoreTest',
+    name: 'FireStoreTest',
+    component: FireStoreTest,
+    meta: { requiresAuth: true }
   },
 ]
 
