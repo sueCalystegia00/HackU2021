@@ -42,11 +42,15 @@
 
     <button v-on:click="joinroom">発信(ルーム)</button>
 
+    <div v-show="this.user.displayName">Your name is {{user.displayName}}</div>
+    <div v-show="this.userCoins">{{userCoins}} coins left</div>
+    <button @click="signOut">ログアウト</button>
+
   </div>
 </template>
 
 <script>
-
+import firebase from "firebase/app";
 import Peer from 'skyway-js';
 
 export default {
@@ -66,7 +70,20 @@ export default {
       mediaConnection: null,  // 通話接続情報
       connectMethods: ['sfu', 'mesh'], //接続方式２択
       selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
+
+      db: null, // FireSote接続用
+      user: null, // userの名前やIDを格納
+      userCoins: null, // ユーザのコイン残り枚数
     }
+  },
+
+  async created() {
+    this.db = firebase.firestore();
+    await this.auth();
+    await this.getUserCoins();
+    await this.createUser();
+    console.log(this.userCoins)
+    console.log(this.user.uid)
   },
 
   mounted: async function() {
@@ -187,7 +204,40 @@ export default {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       document.getElementById('my-video').srcObject = stream;
       this.localStream = stream;
+    },
+
+    auth() {
+      return new Promise((resolve) => {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            this.user = user;
+          } else {
+            this.$router.push("/");
+          }
+          resolve();
+        });
+      });
+    },
+
+    async getUserCoins() {
+      const uid = this.user.uid;
+      const q = await this.db.collection("users").doc(uid).get();
+      if (q.data()) {
+        this.userCoins = q.data().coins;
+      }
+    },
+
+    async createUser() {
+      if (this.userCoins) {
+        return;
+      }
+      await this.db.collection("users").doc(this.user.uid).set({'coins': 5});
+      this.userCoins = 5;
+    },
+
+    signOut() {
+      firebase.auth().signOut() //サインアウト
     }
-  }
+  },
 }
 </script>

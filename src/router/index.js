@@ -3,26 +3,19 @@ import VueRouter from 'vue-router'
 import firebase from 'firebase'
 import CallTest from '../views/CallTest.vue'
 import Top from '../views/Top'
-import FireStoreTest from '../views/FireStoreTest'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
+    name: 'Top',
+    component: Top,
+  },
+  {
+    path: '/call',
     name: 'CallTest',
     component: CallTest,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/top',
-    name: 'Top',
-    component: Top
-  },
-  {
-    path: '/fireStoreTest',
-    name: 'FireStoreTest',
-    component: FireStoreTest,
     meta: { requiresAuth: true }
   },
 ]
@@ -34,7 +27,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // firebase.auth().signOut() // テスト用サインアウト
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   if (requiresAuth) {
     // 認証状態を取得
