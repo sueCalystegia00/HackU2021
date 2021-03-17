@@ -236,7 +236,13 @@ export default {
     },
 
     signOut() {
-      firebase.auth().signOut() //サインアウト
+      const videoElm = document.getElementById('my-video');
+      let stream = videoElm.srcObject
+      let tracks = stream.getTracks();
+      tracks.forEach(function(track){
+        track.stop();
+      });
+      firebase.auth().signOut(); //サインアウト
     }
   },
 }
