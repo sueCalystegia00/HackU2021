@@ -26,6 +26,13 @@
     <button v-on:click="makecall">発信</button>
     <video id="their-video" width="400px" autoplay playsinline></video>
     
+    接続方式:
+    <select v-model="selectedConnectMethod">
+      <option v-for="(connectMethod, key, index) in connectMethods" v-bind:key="index">
+        {{ connectMethod }}
+      </option>
+    </select>
+
   </div>
 </template>
 
@@ -46,6 +53,8 @@ export default {
       theirID: '',  // 相手のpeerID
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
       mediaConnection: null,  // 通話接続情報
+      connectMethods: ['sfu', 'mesh'], //接続方式２択
+      selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
     }
   },
 
