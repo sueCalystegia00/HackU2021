@@ -18,14 +18,30 @@
 
     <video id="my-video" width="400px" autoplay muted playsinline></video>
 
+    <video id="their-video" width="400px" autoplay playsinline></video>
+    <div id="remote-streams"></div>
+
     <p>Your peer ID is {{ peerID }}</p>
 
     <input v-model='theirID' placeholder="input ID">
-    <p>Message is: {{ theirID }}</p>
+    <p>to PeerID is: {{ theirID }}</p>
 
-    <button v-on:click="makecall">発信</button>
-    <video id="their-video" width="400px" autoplay playsinline></video>
+    <button v-on:click="makecall">発信(個人)</button>
+
+    <br><br>
+
+    <input v-model='callNumber' placeholder="input Number">
+    <p>Call Number is: {{ callNumber }}</p>
     
+    接続方式:
+    <select v-model="selectedConnectMethod">
+      <option v-for="(connectMethod, key, index) in connectMethods" v-bind:key="index">
+        {{ connectMethod }}
+      </option>
+    </select>
+
+    <button v-on:click="joinroom">発信(ルーム)</button>
+
   </div>
 </template>
 
@@ -44,8 +60,12 @@ export default {
       selectedVideo: '', // 使用するカメラデバイス
       peerID: '', // ユーザのpeerID
       theirID: '',  // 相手のpeerID
+      callNumber: '', //電話番号(roomID代わり)
+      room: null,
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
       mediaConnection: null,  // 通話接続情報
+      connectMethods: ['sfu', 'mesh'], //接続方式２択
+      selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
     }
   },
 
@@ -105,14 +125,39 @@ export default {
     this.peer.on('error', err => {
       alert(err.message);
     });
-  },
 
+    
+
+  },
 
   methods: {
     // 発信処理
     makecall(){
       this.mediaConnection = this.peer.call(this.theirID, this.localStream);
       this.setEventListener(this.mediaConnection);
+    },
+
+    // ルーム参加
+    joinroom(){
+      this.room = this.peer.joinRoom(this.callNumber, {
+        mode: this.selectedConnectMethod,
+        stream: this.localStream,
+      });
+      this.room.once('open', () => {
+        alert('参加しました');
+      });
+
+      // ルームに参加した人のストリーム
+      this.room.on('stream', async stream => {
+        const newVideo = document.createElement('video');
+        newVideo.srcObject = stream;
+        newVideo.playsInline = true;
+        // mark peerId to find it later at peerLeave event
+        newVideo.setAttribute('data-peer-id', stream.peerId);
+        const remoteVideos = document.getElementById('remote-streams');
+        remoteVideos.append(newVideo);
+        await newVideo.play().catch(console.error);
+      });
     },
 
     // 接続される際のイベントリスナー
