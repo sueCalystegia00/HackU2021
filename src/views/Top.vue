@@ -23,7 +23,7 @@ export default {
         .signInWithPopup(provider)
         .then((obj) => {
           alert("Create account: " + obj.user.displayName);
-          this.$router.push("/fireStoreTest");
+          this.$router.push("/call");
         })
         .catch((error) => alert(error.message));
     },
