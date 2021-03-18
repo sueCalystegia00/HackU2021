@@ -142,12 +142,11 @@ export default {
 
     // ルーム退出
     leaveroom(){
-      this.room.once('close', (close) => {
-        this.callNumber = '';
-        this.room = null;
-        this.removeAudioChildren();
-        alert("roomから退出しました");
-      });
+      this.room.close(), { once: true };
+      this.callNumber = '';
+      this.room = null;
+      this.removeAudioChildren();
+      alert("roomから退出しました");
     },
 
     // カメラ・オーディオ選択確認
@@ -197,7 +196,7 @@ export default {
     },
 
     signOut() {
-      this.removeAudioChildren()
+      this.leaveroom();
       const audioElm = document.getElementById('my-audio');
       let stream = audioElm.srcObject;
       let tracks = stream.getTracks();
