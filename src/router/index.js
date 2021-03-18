@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import firebase from 'firebase'
 import Call from '../views/Call.vue'
 import Top from '../views/Top'
+import Drag from '../views/DragTest'
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,11 @@ const routes = [
     name: 'Call',
     component: Call,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/drag',
+    name: 'Drag',
+    component: Drag,
   },
 ]
 
