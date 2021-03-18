@@ -1,17 +1,15 @@
 <template>
   <div class="Drag">
-    <draggable 
-        v-model="insertedCoin"
-        draggable=".item"
-        group="items"
-        class="area1"
+    <draggable
+      v-model="insertedCoin"
+      draggable=".item"
+      group="items"
+      class="area1"
     >
     </draggable>
 
     <draggable v-model="stockCoins" draggable=".item" group="items">
-      <div v-for="item in stockCoins" :key="item.id" class="item">
-          10
-      </div>
+      <div v-for="item in stockCoins" :key="item.id" class="item">10</div>
     </draggable>
     <div>
       <span>{{ formattedinsertedCoin }}</span>
@@ -36,17 +34,15 @@ export default {
   },
   data() {
     return {
-      insertedCoin: [
-      ],
-      stockCoins: [
-      ],
+      insertedCoin: [],
+      stockCoins: [],
     };
   },
   created() {
-      const coins = 5;
-      for(let i=0; i<coins; i++) {
-          this.stockCoins.push({id: i, name: `coin${i}`})
-      }
+    const coins = 5;
+    for (let i = 0; i < coins; i++) {
+      this.stockCoins.push({ id: i, name: `coin${i}` });
+    }
   },
   computed: {
     formattedinsertedCoin() {
@@ -78,12 +74,12 @@ span {
 }
 
 .item {
-    height: 30px;
-    width: 30px;
-    margin: 10px;
-    border-radius: 100px;
-    background-color: chocolate;
-    display: flex;
+  height: 30px;
+  width: 30px;
+  margin: 10px;
+  border-radius: 100px;
+  background-color: chocolate;
+  display: flex;
   justify-content: space-around;
 }
 
@@ -95,8 +91,8 @@ span {
 }
 
 .area1 {
-    height: 100px;
-    width: 100px;
-    background-color: red;
+  height: 100px;
+  width: 100px;
+  background-color: red;
 }
 </style>
