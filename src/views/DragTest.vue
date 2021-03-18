@@ -1,13 +1,13 @@
 <template>
   <div class="Drag">
     <div class="overarea">
-        <draggable
+      <draggable
         v-model="insertedCoin"
         draggable=".item"
         group="items"
         class="area1"
-        >
-        </draggable>
+      >
+      </draggable>
     </div>
 
     <draggable v-model="stockCoins" draggable=".item" group="items">
@@ -54,6 +54,15 @@ export default {
       return dumpObj(this.stockCoins);
     },
   },
+  watch: {
+    insertedCoin: {
+      handler: function () {
+        const musicPath = require("@/assets/register.mp3");
+        var audio = new Audio(musicPath); // path to file
+        audio.play();
+      },
+    },
+  },
   methods: {
     showItems() {
       alert(
@@ -93,7 +102,7 @@ span {
 }
 
 .overarea {
-    height: 100px;
+  height: 100px;
   width: 100px;
   background-color: red;
   display: flex;
