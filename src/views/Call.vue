@@ -161,15 +161,15 @@ export default {
     // カメラ・オーディオ選択確認
     onChange(){
       if(this.selectedAudio != ''){
-          this.connectLocalStream();
+        this.connectLocalStream();
       }
     },
 
     // オーディオの反映
     async connectLocalStream(){
       const constraints = {
-          audio: this.selectedAudio ? { deviceId: { exact: this.selectedAudio } } : false,
-          video: false
+        audio: this.selectedAudio ? { deviceId: { exact: this.selectedAudio } } : false,
+        video: false
       }
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       this.localStream = stream;
