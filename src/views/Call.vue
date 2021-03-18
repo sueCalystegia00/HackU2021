@@ -140,8 +140,9 @@ export default {
       });
     },
 
+    // ルーム退出
     leaveroom(){
-      this.room.once('close', () => {
+      this.room.once('close', (close) => {
         this.callNumber = '';
         this.room = null;
         this.removeAudioChildren();
@@ -208,6 +209,7 @@ export default {
 
     // 参加者のAudioタグを消す
     removeAudioChildren(){
+      const remoteAudios = document.getElementById('remote-streams');
       Array.from(remoteAudios.children).forEach(remoteAudio => {
         remoteAudio.srcObject.getTracks().forEach(track => track.stop());
         remoteAudio.srcObject = null;
