@@ -47,7 +47,6 @@ export default {
       callNumber: '', //電話番号(roomID代わり)
       room: null,
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
-      mediaConnection: null,  // 通話接続情報
       connectMethods: ['sfu', 'mesh'], //接続方式２択
       selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
 
@@ -98,16 +97,6 @@ export default {
       this.peerID = this.peer.id;
     });
 
-    // 切断イベント
-    this.peer.on('close', () => {
-      alert('通信が切断しました。');
-    });
-
-    // エラーイベント
-    this.peer.on('error', err => {
-      alert(err.message);
-    });
-
   },
 
   methods: {
@@ -153,6 +142,8 @@ export default {
 
     leaveroom(){
       this.room.once('close', () => {
+        this.callNumber = '';
+        this.room = null;
         this.removeAudioChildren();
         alert("roomから退出しました");
       });
