@@ -1,43 +1,60 @@
 <template>
   <div class="Drag">
-    <draggable v-model="items" draggable=".item">
-      <div v-for="item in items" :key="item.id" class="item">
-        {{ item.name }}
+    <draggable 
+        v-model="insertedCoin"
+        draggable=".item"
+        group="items"
+        class="area1"
+    >
+    </draggable>
+
+    <draggable v-model="stockCoins" draggable=".item" group="items">
+      <div v-for="item in stockCoins" :key="item.id" class="item">
+          10
       </div>
     </draggable>
-    <button @click="showItems">表示</button>
+    <div>
+      <span>{{ formattedinsertedCoin }}</span>
+    </div>
+    <div>
+      <span>{{ formattedstockCoins }}</span>
+    </div>
   </div>
 </template>
 
 <script>
 import vuedraggable from "vuedraggable";
 
+function dumpObj(obj) {
+  return JSON.stringify(obj, null, 2);
+}
+
 export default {
   name: "Drag",
   components: {
-    draggable: vuedraggable
+    draggable: vuedraggable,
   },
   data() {
     return {
-      items: [
-        {
-          id: 1,
-          name: "ITEM - 1",
-        },
-        {
-          id: 2,
-          name: "ITEM - 2",
-        },
-        {
-          id: 3,
-          name: "ITEM - 3",
-        },
-        {
-          id: 4,
-          name: "ITEM - 4",
-        },
+      insertedCoin: [
+      ],
+      stockCoins: [
       ],
     };
+  },
+  created() {
+      const coins = 5;
+      for(let i=0; i<coins; i++) {
+          this.stockCoins.push({id: i, name: `coin${i}`})
+      }
+  },
+  computed: {
+    formattedinsertedCoin() {
+      return dumpObj(this.insertedCoin);
+    },
+    formattedstockCoins() {
+      return dumpObj(this.stockCoins);
+    },
   },
   methods: {
     showItems() {
@@ -52,4 +69,34 @@ export default {
 </script>
 
 <style scoped>
+span {
+  text-align: start;
+  background: #2c3e50;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.item {
+    height: 30px;
+    width: 30px;
+    margin: 10px;
+    border-radius: 100px;
+    background-color: chocolate;
+    display: flex;
+  justify-content: space-around;
+}
+
+.container {
+  margin: auto;
+  width: 600px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.area1 {
+    height: 100px;
+    width: 100px;
+    background-color: red;
+}
 </style>
