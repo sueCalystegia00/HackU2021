@@ -22,8 +22,8 @@
       </option>
     </select>
 
-    <button v-on:click="joinroom">発信(ルーム)</button>
-    <button v-on:click="leaveroom">退出(ルーム)</button>
+    <button @click="joinroom">発信(ルーム)</button>
+    <button @click="leaveroom">退出(ルーム)</button>
 
     <div v-show="this.user.displayName">Your name is {{user.displayName}}</div>
     <div v-show="this.userCoins">{{userCoins}} coins left</div>
