@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import firebase from 'firebase'
-import Call from '../views/CallTest.vue'
+import Call from '../views/Call.vue'
 import Top from '../views/Top'
 
 Vue.use(VueRouter)

@@ -1,5 +1,7 @@
 <template>
   <div class="Call">
+    <p>Your peer ID is {{ peerID }}</p>
+
     マイク:
     <select v-model="selectedAudio" @change="onChange">
       <option disabled value="">Please select one</option>
@@ -8,27 +10,7 @@
       </option>
     </select>
 
-    カメラ: 
-    <select v-model="selectedVideo" @change="onChange">
-      <option disabled value="">Please select one</option>
-      <option v-for="(video, key, index) in videos" v-bind:key="index" :value="video.value">
-        {{ video.text }}
-      </option>
-    </select>
-
-    <video id="my-video" width="400px" autoplay muted playsinline></video>
-
-    <video id="their-video" width="400px" autoplay playsinline></video>
     <div id="remote-streams"></div>
-
-    <p>Your peer ID is {{ peerID }}</p>
-
-    <input v-model='theirID' placeholder="input ID">
-    <p>to PeerID is: {{ theirID }}</p>
-
-    <button v-on:click="makecall">発信(個人)</button>
-
-    <br><br>
 
     <input v-model='callNumber' placeholder="input Number">
     <p>Call Number is: {{ callNumber }}</p>
@@ -41,6 +23,7 @@
     </select>
 
     <button v-on:click="joinroom">発信(ルーム)</button>
+    <button v-on:click="leaveroom">退出(ルーム)</button>
 
     <div v-show="this.user.displayName">Your name is {{user.displayName}}</div>
     <div v-show="this.userCoins">{{userCoins}} coins left</div>
@@ -59,11 +42,8 @@ export default {
   data(){
     return{
       audios: [], //取得したオーディオデバイスの情報
-      videos: [], //取得したカメラデバイスの情報
       selectedAudio: '', // 使用するオーディオデバイス
-      selectedVideo: '', // 使用するカメラデバイス
       peerID: '', // ユーザのpeerID
-      theirID: '',  // 相手のpeerID
       callNumber: '', //電話番号(roomID代わり)
       room: null,
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
@@ -86,7 +66,7 @@ export default {
     console.log(this.user.uid)
   },
 
-  mounted: async function() {
+  async mounted() {
     // デバイスへのアクセス
     const deviceInfos = await navigator.mediaDevices.enumerateDevices();
 
@@ -95,19 +75,10 @@ export default {
     .filter(deviceInfo => deviceInfo.kind === 'audioinput')
     .map(audio => this.audios.push({text: audio.label || `Microphone ${this.audios.length + 1}`, value: audio.deviceId}));
 
-    // カメラの情報を取得
-    deviceInfos
-    .filter(deviceInfo => deviceInfo.kind === 'videoinput')
-    .map(video => this.videos.push({text: video.label || `Camera  ${this.videos.length - 1}`, value: video.deviceId}));
-
-    // カメラ映像取得
-    navigator.mediaDevices.getUserMedia({video: true, audio: true})
+    // ストリーミング取得
+    navigator.mediaDevices.getUserMedia({video: false, audio: true})
     .then( stream => {
-      // 成功時にvideo要素にカメラ映像をセットし、再生
-      const videoElm = document.getElementById('my-video');
-      videoElm.srcObject = stream;
-      videoElm.play();
-      // 着信時に相手にカメラ映像を返せるように、グローバル変数に保存しておく
+      // 着信時に相手に返せるように、グローバル変数に保存しておく
       this.localStream = stream;
     }).catch( error => {
       // 失敗時にはエラーログを出力
@@ -127,12 +98,6 @@ export default {
       this.peerID = this.peer.id;
     });
 
-    // 着信処理
-    this.peer.on('call', call => {
-      call.answer(this.localStream);
-      this.setEventListener(call);
-    });
-
     // 切断イベント
     this.peer.on('close', () => {
       alert('通信が切断しました。');
@@ -143,66 +108,70 @@ export default {
       alert(err.message);
     });
 
-    
-
   },
 
   methods: {
-    // 発信処理
-    makecall(){
-      this.mediaConnection = this.peer.call(this.theirID, this.localStream);
-      this.setEventListener(this.mediaConnection);
-    },
-
     // ルーム参加
     joinroom(){
+      // ルームの確立
       this.room = this.peer.joinRoom(this.callNumber, {
         mode: this.selectedConnectMethod,
         stream: this.localStream,
       });
+      
+      // 参加
       this.room.once('open', () => {
         alert('参加しました');
       });
 
-      // ルームに参加した人のストリーム
+      // ルームに他の新規参加があった場合
       this.room.on('stream', async stream => {
-        const newVideo = document.createElement('video');
-        newVideo.srcObject = stream;
-        newVideo.playsInline = true;
-        // mark peerId to find it later at peerLeave event
-        newVideo.setAttribute('data-peer-id', stream.peerId);
-        const remoteVideos = document.getElementById('remote-streams');
-        remoteVideos.append(newVideo);
-        await newVideo.play().catch(console.error);
+        const newAudio = document.createElement('audio');
+        newAudio.srcObject = stream;
+        newAudio.playsInline = true;
+
+        newAudio.setAttribute('data-peer-id', stream.peerId);
+        const remoteAudios = document.getElementById('remote-streams');
+        remoteAudios.append(newAudio);
+        await newAudio.play().catch(console.error);
+        alert(stream.peerId + "さんが参加しました");
+      });
+
+      // ルームから参加者が退出する場合の処理
+      this.room.on('peerLeave', peerId => {
+        const remoteAudios = document.getElementById('remote-streams');
+        const remoteAudio= remoteAudios.querySelector(
+          `[data-peer-id="${peerId}"]`
+        );
+        remoteAudio.srcObject.getTracks().forEach(track => track.stop());
+        remoteAudio.srcObject = null;
+        remoteAudio.remove();
+
+        alert(peerId + "さんが退出しました");
       });
     },
 
-    // 接続される際のイベントリスナー
-    setEventListener(mediaConnection){
-      mediaConnection.on('stream', stream => {
-        // video要素にカメラ映像をセットして再生
-        const videoElm = document.getElementById('their-video')
-        videoElm.srcObject = stream;
-        videoElm.play();
-      })
+    leaveroom(){
+      this.room.once('close', () => {
+        this.removeAudioChildren();
+        alert("roomから退出しました");
+      });
     },
 
     // カメラ・オーディオ選択確認
     onChange(){
-      if(this.selectedAudio != '' && this.selectedVideo != ''){
-          this.connectLocalCamera();
+      if(this.selectedAudio != ''){
+          this.connectLocalStream();
       }
     },
 
-    // カメラ・オーディオの反映
-    async connectLocalCamera(){
+    // オーディオの反映
+    async connectLocalStream(){
       const constraints = {
           audio: this.selectedAudio ? { deviceId: { exact: this.selectedAudio } } : false,
-          video: this.selectedVideo ? { deviceId: { exact: this.selectedVideo } } : false
+          video: false
       }
-
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      document.getElementById('my-video').srcObject = stream;
       this.localStream = stream;
     },
 
@@ -236,13 +205,23 @@ export default {
     },
 
     signOut() {
-      const videoElm = document.getElementById('my-video');
-      let stream = videoElm.srcObject
+      removeAudioChildren()
+      const audioElm = document.getElementById('my-audio');
+      let stream = audioElm.srcObject;
       let tracks = stream.getTracks();
       tracks.forEach(function(track){
         track.stop();
       });
       firebase.auth().signOut(); //サインアウト
+    },
+
+    // 参加者のAudioタグを消す
+    removeAudioChildren(){
+      Array.from(remoteAudios.children).forEach(remoteAudio => {
+        remoteAudio.srcObject.getTracks().forEach(track => track.stop());
+        remoteAudio.srcObject = null;
+        remoteAudio.remove();
+      });
     }
   },
 }
