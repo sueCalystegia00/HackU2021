@@ -47,7 +47,6 @@ export default {
       callNumber: '', //電話番号(roomID代わり)
       room: null,
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
-      mediaConnection: null,  // 通話接続情報
       connectMethods: ['sfu', 'mesh'], //接続方式２択
       selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
 
@@ -98,16 +97,6 @@ export default {
       this.peerID = this.peer.id;
     });
 
-    // 切断イベント
-    this.peer.on('close', () => {
-      alert('通信が切断しました。');
-    });
-
-    // エラーイベント
-    this.peer.on('error', err => {
-      alert(err.message);
-    });
-
   },
 
   methods: {
@@ -151,8 +140,11 @@ export default {
       });
     },
 
+    // ルーム退出
     leaveroom(){
-      this.room.once('close', () => {
+      this.room.once('close', (close) => {
+        this.callNumber = '';
+        this.room = null;
         this.removeAudioChildren();
         alert("roomから退出しました");
       });
@@ -205,7 +197,7 @@ export default {
     },
 
     signOut() {
-      removeAudioChildren()
+      this.removeAudioChildren()
       const audioElm = document.getElementById('my-audio');
       let stream = audioElm.srcObject;
       let tracks = stream.getTracks();
@@ -217,6 +209,7 @@ export default {
 
     // 参加者のAudioタグを消す
     removeAudioChildren(){
+      const remoteAudios = document.getElementById('remote-streams');
       Array.from(remoteAudios.children).forEach(remoteAudio => {
         remoteAudio.srcObject.getTracks().forEach(track => track.stop());
         remoteAudio.srcObject = null;
