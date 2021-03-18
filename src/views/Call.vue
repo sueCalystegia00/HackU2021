@@ -196,7 +196,7 @@ export default {
     },
 
     signOut() {
-      removeAudioChildren()
+      this.removeAudioChildren()
       const audioElm = document.getElementById('my-audio');
       let stream = audioElm.srcObject;
       let tracks = stream.getTracks();
