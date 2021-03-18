@@ -1,12 +1,14 @@
 <template>
   <div class="Drag">
-    <draggable
-      v-model="insertedCoin"
-      draggable=".item"
-      group="items"
-      class="area1"
-    >
-    </draggable>
+    <div class="overarea">
+        <draggable
+        v-model="insertedCoin"
+        draggable=".item"
+        group="items"
+        class="area1"
+        >
+        </draggable>
+    </div>
 
     <draggable v-model="stockCoins" draggable=".item" group="items">
       <div v-for="item in stockCoins" :key="item.id" class="item">10</div>
@@ -90,9 +92,18 @@ span {
   justify-content: space-around;
 }
 
+.overarea {
+    height: 100px;
+  width: 100px;
+  background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .area1 {
   height: 100px;
   width: 100px;
-  background-color: red;
+  opacity: 0;
 }
 </style>
