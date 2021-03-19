@@ -4,6 +4,7 @@ import firebase from 'firebase'
 import Call from '../views/Call.vue'
 import Top from '../views/Top'
 import Drag from '../views/DragTest'
+import Interface from '../views/InterfaceTest'
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,11 @@ const routes = [
     path: '/drag',
     name: 'Drag',
     component: Drag,
+  },
+  {
+    path: '/interface',
+    name: 'Interface',
+    component: Interface,
   },
 ]
 
