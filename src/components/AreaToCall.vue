@@ -4,7 +4,7 @@
       <img class="callicon" src="@/assets/icon_calling.svg"/>
     </button>
     <div id="numberkeys">
-      <div v-for="key in numberkeys" :key="key.id" class="numberkey">{{key}}</div>
+      <button v-for="key in numberkeys" :key="key.id" class="numberkey">{{key}}</button>
     </div>
   </div>
 </template>
