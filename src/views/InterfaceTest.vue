@@ -3,7 +3,7 @@
     <div class="outer">
       <div class="inner">
         <div id="dummyBoxM">メッセージパネル</div>
-        <div id="dummyBoxC">コイン投入口</div>
+        <insertCoin />
         <areatocall />
       </div>
       <div class="howToUse">ご利用方法</div>
@@ -13,11 +13,13 @@
 
 <script>
 import AreaToCall from "../components/AreaToCall.vue";
+import InsertCoin from "../components/InsertCoin.vue";
 
 export default {
   name: "Interface",
   components: {
     areatocall: AreaToCall,
+    insertCoin: InsertCoin
   },
 };
 </script>
