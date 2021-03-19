@@ -1,47 +1,68 @@
 <template>
   <div class="Interface">
-    <div id="dummyBoxM">メッセージパネル</div>
-    <div id="dummyBoxC">コイン投入口</div>
-    <areatocall/>
+    <div class="outer">
+      <div class="inner">
+        <div id="dummyBoxM">メッセージパネル</div>
+        <div id="dummyBoxC">コイン投入口</div>
+        <areatocall />
+      </div>
+      <div class="howToUse">ご利用方法</div>
+    </div>
   </div>
 </template>
 
 <script>
-import AreaToCall from '../components/AreaToCall.vue';
+import AreaToCall from "../components/AreaToCall.vue";
 
 export default {
   name: "Interface",
   components: {
-    areatocall: AreaToCall
-  }
+    areatocall: AreaToCall,
+  },
 };
 </script>
 
 <style scoped>
+.Interface {
+  width: 100%;
+  height: 100%;
+  /*最大・最小幅をiPhoneに設定*/
+  max-width: 414px;
+  max-height: 896px;
+  min-width: 320px;
+  min-height: 568px;
+}
 
-.Interface{
-  width: 90vw;
-  height: 85vh;
+.outer {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  background-color: #7bc046;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  border-radius: 5px;
+  box-sizing: border-box; /*これがないとはみ出す*/
+  max-height: calc(568px - 32px);
   background-color: #475D52;
-  border-width: 1px;
-  margin: auto;
-  overflow: hidden;
 }
 
-#dummyBoxM{
-  width: 90%;
-  height: 30%;
-  background-color: #CBB621;
-  position: relative;
-  margin: 5%;
+#dummyBoxM {
+  width: 100%;
+  height: 100px;
+  background-color: #cbb621;
 }
 
-#dummyBoxC{
-  width: 90%;
-  height: 15%;
+#dummyBoxC {
+  width: 100%;
+  height: 100px;
   background-color: #88878436;
-  position: relative;
-  margin: 5%;
 }
-
 </style>
