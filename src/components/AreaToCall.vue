@@ -4,7 +4,13 @@
       <img class="callicon" src="@/assets/icon_calling.svg"/>
     </button>
     <div id="keynumbers">
-      <button v-for="key in keynumbers" :key="key.id" class="keynumber">{{key}}</button>
+      <button
+        v-for="key in keynumbers" :key="key.id"
+        class="keynumber"
+        @click="inputTelNumberByEmit(key)"
+      >
+        {{key}}
+      </button>
     </div>
   </div>
 </template>
@@ -17,6 +23,12 @@ export default {
       keynumbers: ['1','2','3','4','5','6','7','8','9','＊','0','♯'],
     };
   },
+  methods: {
+    inputTelNumberByEmit(key) {
+      console.log("input is " + key);
+      this.$emit('pushnumber', (key));
+    }
+  }
 }
 </script>
 
