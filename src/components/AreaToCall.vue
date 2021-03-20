@@ -3,8 +3,8 @@
     <button id="receiver">
       <img class="callicon" src="@/assets/icon_calling.svg"/>
     </button>
-    <div id="numberkeys">
-      <button v-for="key in numberkeys" :key="key.id" class="numberkey">{{key}}</button>
+    <div id="keynumbers">
+      <button v-for="key in keynumbers" :key="key.id" class="keynumber">{{key}}</button>
     </div>
   </div>
 </template>
@@ -14,7 +14,7 @@ export default {
   name: 'AreaToCall',
   data() {
     return {
-      numberkeys: ['1','2','3','4','5','6','7','8','9','＊','0','♯'],
+      keynumbers: ['1','2','3','4','5','6','7','8','9','＊','0','♯'],
     };
   },
 }
@@ -45,7 +45,7 @@ export default {
   width: 70%;
 }
 
-#numberkeys{
+#keynumbers{
   width: 75%;
   height: 100%;
   display: grid;
@@ -53,7 +53,7 @@ export default {
   margin-left: 5%;
 }
 
-.numberkey{
+.keynumber{
   width: 90%;
   height: 90%;
   margin: auto;
