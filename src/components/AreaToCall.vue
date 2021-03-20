@@ -1,6 +1,6 @@
 <template>
   <div id="AreaToCall">
-    <button id="receiver">
+    <button id="receiver" @click="call">
       <img class="callicon" src="@/assets/icon_calling.svg"/>
     </button>
     <div id="keynumbers">
@@ -24,6 +24,9 @@ export default {
     };
   },
   methods: {
+    call(){
+      console.log("発信");
+    },
     inputTelNumberByEmit(key) {
       console.log("input is " + key);
       this.$emit('pushnumber', (key));
