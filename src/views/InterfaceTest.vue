@@ -2,9 +2,9 @@
   <div class="Interface">
     <div class="outer">
       <div class="inner">
-        <div id="dummyBoxM">メッセージパネル</div>
+        <div id="dummyBoxM">{{inputTellNumber}}</div>
         <insertCoin />
-        <areatocall />
+        <areatocall @pushnumber="emitEventByPushNumber"/>
       </div>
       <div class="howToUse">ご利用方法</div>
     </div>
@@ -21,6 +21,16 @@ export default {
     areatocall: AreaToCall,
     insertCoin: InsertCoin
   },
+  data() {
+    return {
+      inputTellNumber: '',
+    };
+  },
+  methods:{
+    emitEventByPushNumber(number){
+      this.inputTellNumber += number;
+    }
+  }
 };
 </script>
 
