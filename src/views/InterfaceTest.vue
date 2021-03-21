@@ -85,6 +85,7 @@ export default {
 .howToUse {
   width: 100%;
   padding: 16px;
+  box-sizing: border-box; /*これがないとはみ出す*/
 
   color: white;
   background-color: #7bc046;
