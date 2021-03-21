@@ -78,7 +78,7 @@ export default {
     .filter(deviceInfo => deviceInfo.kind === 'audioinput')
     .map(audio => this.audios.push({text: audio.label || `Microphone ${this.audios.length + 1}`, value: audio.deviceId}));
 
-    // ストリーミング取得
+    // ストリーミング生成
     navigator.mediaDevices.getUserMedia({video: false, audio: true})
     .then( stream => {
       // 着信時に相手に返せるように、グローバル変数に保存しておく
@@ -89,14 +89,13 @@ export default {
       return;
     });
 
-
     // 通信拠点の単位となるオブジェクトのインスタンスを生成
     this.peer = new Peer(this.name,{
       key: process.env.VUE_APP_SKYWAY_KEY,  // APIkey
       debug: 3  // ログの出力レベル．3の場合は開発用に全てのログを出力する．
     })
 
-    //PeerID取得
+    //自身のPeerID取得
     this.peer.on('open', () => {
       this.peerID = this.peer.id;
     });
@@ -112,6 +111,7 @@ export default {
       immediate: true,
       handler: function () {
         console.log("残り " + this.availabletime + "秒");
+        // ルーム接続中に時間が0になったら退出処理
         if(this.availabletime == 0 && this.room != null){
           this.leaveroom();
         }
@@ -120,6 +120,7 @@ export default {
   },
 
   methods: {
+    // 10円投下による時間延長
     addTime(){
       this.availabletime += 10; //テスト用に10秒追加
     },
@@ -142,6 +143,7 @@ export default {
       
       // 参加
       this.room.once('open', () => {
+        // ルーム参加後から通話可能時間を減らしていく
         this.countdowntimer = setInterval(
           function(){
             this.availabletime--;
@@ -153,14 +155,15 @@ export default {
 
       // ルームに他の新規参加があった場合
       this.room.on('stream', async stream => {
+        // 取得したストリームを再生する要素の生成
         const newAudio = document.createElement('audio');
         newAudio.srcObject = stream;
         newAudio.playsInline = true;
-
         newAudio.setAttribute('data-peer-id', stream.peerId);
         const remoteAudios = document.getElementById('remote-streams');
         remoteAudios.append(newAudio);
         await newAudio.play().catch(console.error);
+
         alert(stream.peerId + "さんが参加しました");
       });
 
@@ -180,8 +183,8 @@ export default {
 
     // ルーム退出
     leaveroom(){
-      if(this.room == null)return;
-      this.room.close(), { once: true };
+      if(this.room == null)return;  // 参加していない場合は何もしない
+      this.room.close(), { once: true };  // ルームを退出
       this.callNumber = '';
       this.room = null;
       this.removeAudioChildren();
