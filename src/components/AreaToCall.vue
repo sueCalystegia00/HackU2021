@@ -54,7 +54,6 @@ export default {
   width: 100%;
   height: 188.8px;
   margin-top: 16px;
-  background-color: blue;
 
   display: flex;
   justify-content: space-between;
@@ -77,20 +76,20 @@ export default {
 }
 
 #keynumbers {
-  width: 60%;
-  height: 100%;
+  width: 50%;
+  min-width: 150px;
 
-  display: grid;
-  grid-auto-rows: 14vw 1fr;
-  grid-template-columns: repeat(3, 15vw);
+  display: flex;
+  flex-wrap: wrap;
 
   justify-content: center;
   align-items: center;
 }
 
 .keynumber {
-  width: 100%;
-  height: 100%;
+  min-width: 45px;
+  min-height: 45px;
+
   border: 0px;
   border-radius: 50%;
   background-color: #000000;

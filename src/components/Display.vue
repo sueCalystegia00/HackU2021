@@ -13,6 +13,10 @@ export default {
 #Display {
   width: 100%;
   height: 188.8px;
-  background-color: blue;
+
+  background-color: #CBB621;
+  border: 3px solid black;
+  border-radius: 5px;
+  box-sizing: border-box; /*これがないとはみ出す*/
 }
 </style>
