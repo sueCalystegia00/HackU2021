@@ -2,22 +2,30 @@
   <div class="Interface">
     <div class="outer">
       <div class="inner">
-        <div id="dummyBoxM">{{inputTellNumber}}</div>
+        <display :inputTellNumber="inputTellNumber" />
         <insertCoin />
         <areatocall @pushnumber="emitEventByPushNumber"/>
       </div>
-      <div class="howToUse">ご利用方法</div>
+      <div class="howToUse">
+        <p>ご利用方法</p>
+        <p>ご利用方法</p>
+        <p>ご利用方法</p>
+        <p>ご利用方法</p>
+        <p>ご利用方法</p>
+        </div>
     </div>
   </div>
 </template>
 
 <script>
+import Display from "../components/Display.vue";
 import AreaToCall from "../components/AreaToCall.vue";
 import InsertCoin from "../components/InsertCoin.vue";
 
 export default {
   name: "Interface",
   components: {
+    display: Display,
     areatocall: AreaToCall,
     insertCoin: InsertCoin
   },
@@ -46,7 +54,6 @@ export default {
 
 .outer {
   width: 100%;
-  height: 100%;
   padding: 16px;
   background-color: #7bc046;
   border-radius: 10px;
@@ -58,23 +65,9 @@ export default {
 
 .inner {
   width: 100%;
-  height: 100%;
   padding: 16px;
   border-radius: 5px;
   box-sizing: border-box; /*これがないとはみ出す*/
-  max-height: calc(568px - 32px);
   background-color: #475D52;
-}
-
-#dummyBoxM {
-  width: 100%;
-  height: 100px;
-  background-color: #cbb621;
-}
-
-#dummyBoxC {
-  width: 100%;
-  height: 100px;
-  background-color: #88878436;
 }
 </style>
