@@ -22,6 +22,8 @@
       </option>
     </select>
 
+    <button @click="addTime">10円投下ボタン(仮)</button>
+
     <button @click="joinroom">発信(ルーム)</button>
     <button @click="leaveroom">退出(ルーム)</button>
 
@@ -49,6 +51,8 @@ export default {
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
       connectMethods: ['sfu', 'mesh'], //接続方式２択
       selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
+      countdowntimer: null,
+      availabletime: 0, // 通話可能時間
 
       db: null, // FireSote接続用
       user: null, // userの名前やIDを格納
@@ -99,7 +103,23 @@ export default {
 
   },
 
+  watch: {
+    availabletime: {
+      handler: function () {
+        console.log("残り " + this.availabletime + "秒");
+        if(this.availabletime = 0 && this.room != null){
+          //this.leaveroom();
+        }
+      },
+    }
+  },
+
   methods: {
+    addTime(){
+      this.availabletime += 5;
+      console.log("addtimeの方 " + this.availabletime + "秒");
+    },
+
     // ルーム参加
     joinroom(){
       // ルームの確立
@@ -110,6 +130,7 @@ export default {
       
       // 参加
       this.room.once('open', () => {
+        //this.countdowntimer = setInterval(this.availabletime--,1000); //1000ミリ秒間隔で通話可能時間を減らす
         alert('参加しました');
       });
 
@@ -146,6 +167,8 @@ export default {
       this.callNumber = '';
       this.room = null;
       this.removeAudioChildren();
+      clearInterval(this.countdowntimer);
+      //this.availabletime = 0;
       alert("roomから退出しました");
     },
 
