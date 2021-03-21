@@ -61,7 +61,7 @@ export default {
 }
 
 #receiver {
-  width: 25%;
+  width: 20%;
   height: 100%;
   background-color: #7bc046;
   border-width: 3px;
@@ -73,7 +73,7 @@ export default {
 }
 
 .callicon {
-  width: 70%;
+  width: 50%;
 }
 
 #keynumbers {
@@ -81,14 +81,16 @@ export default {
   height: 100%;
 
   display: grid;
-  grid-template-columns: 33% 33% 33%;
+  grid-auto-rows: 14vw 1fr;
+  grid-template-columns: repeat(3, 15vw);
+
   justify-content: center;
   align-items: center;
 }
 
 .keynumber {
-  width: 50px;
-  height: 50px;
+  width: 100%;
+  height: 100%;
   border: 0px;
   border-radius: 50%;
   background-color: #000000;
