@@ -1,6 +1,6 @@
 <template>
   <div id="AreaToCall">
-    <div id="receiver" @click="call">
+    <div id="receiver" @click="callByEmit">
       <img class="callicon" src="@/assets/icon_calling.svg" />
     </div>
     <div id="keynumbers">
@@ -25,8 +25,9 @@ export default {
     };
   },
   methods: {
-    call() {
+    callByEmit() {
       console.log("発信");
+      this.$emit("pushcall", );
     },
     playSound(key) {
       let musicPath;
