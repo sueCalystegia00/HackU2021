@@ -30,6 +30,9 @@ export default {
       this.$emit("pushcall", );
     },
     playSound(key) {
+      const soundEffect = new Audio(); 
+      soundEffect.play();
+
       let musicPath;
       if (key % 2 == 0) {
         musicPath = require("@/assets/Telephone-DTMF01-01(1).mp3");
@@ -38,8 +41,8 @@ export default {
       } else {
         musicPath = require("@/assets/Telephone-DTMF01-03(3).mp3");
       }
-      var audio = new Audio(musicPath); // path to file
-      audio.play();
+      soundEffect.src = musicPath;
+      soundEffect.play();
     },
     inputTelNumberByEmit(key) {
       console.log("input is " + key);
@@ -75,7 +78,7 @@ export default {
 }
 
 #keynumbers {
-  width: 65%;
+  width: 55%;
   height: 100%;
 
   display: grid;
@@ -83,6 +86,32 @@ export default {
   grid-template-columns: 33% 33% 33%;
 
   gap: 1px;
+}
+
+@media screen and (min-width: 321px) {
+  #keynumbers {
+    width: 60%;
+    height: 100%;
+
+    display: grid;
+    grid-template-rows: 25% 25% 25% 25%;
+    grid-template-columns: 33% 33% 33%;
+
+    gap: 1px;
+  }
+}
+
+@media screen and (min-width: 414px) {
+  #keynumbers {
+    width: 55%;
+    height: 100%;
+
+    display: grid;
+    grid-template-rows: 25% 25% 25% 25%;
+    grid-template-columns: 33% 33% 33%;
+
+    gap: 1px;
+  }
 }
 
 .keynumber {

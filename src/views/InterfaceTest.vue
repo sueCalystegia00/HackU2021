@@ -50,7 +50,7 @@ export default {
 
   /*最大をiPhoneに設定*/
   max-height: 896px;
-  max-width: 414px;
+  max-width: 500px;
 }
 
 .outer {
