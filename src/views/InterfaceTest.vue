@@ -46,11 +46,10 @@ export default {
 .Interface {
   width: 100%;
   height: 100%;
-  /*最大・最小幅をiPhoneに設定*/
-  max-width: 414px;
-  min-width: 320px;
+
+  /*最大をiPhoneに設定*/
   max-height: 896px;
-  min-height: 568px;
+  max-width: 414px;
 }
 
 .outer {
@@ -68,11 +67,18 @@ export default {
 .inner {
   width: 100%;
   height: 100%;
-  max-height: 646px;
+  /*最大をiPhoneに設定*/
+  max-height: 812px;
+
   padding: 16px;
   border-radius: 5px;
   box-sizing: border-box; /*これがないとはみ出す*/
   background-color: #475d52;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .howToUse {

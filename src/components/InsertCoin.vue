@@ -75,14 +75,14 @@ export default {
 <style scoped>
 #InsertCoin {
   width: 100%;
-  height: 94.4px;
+  height: calc(20% - 32px);
   margin-top: 16px;
   overflow: hidden;
 }
 
 .outer {
   width: 100%;
-  height: 100px;
+  height: 100%;
   /*padding: 0 16px;*/
   box-sizing: border-box; /*これがないとはみ出す*/
 
@@ -92,8 +92,11 @@ export default {
 }
 
 .insertCircle {
-  min-width: 70px;
-  min-height: 70px;
+  min-width: 60px;
+  min-height: 60px;
+  max-height: 100px;
+  max-width: 100px;
+
   border: solid 3px black;
   border-radius: 100px;
   background-color: #c4c4c4;
@@ -101,9 +104,32 @@ export default {
   position: relative;
 }
 
+.area1 {
+  width: 30%;
+  min-width: 60px;
+  min-height: 60px;
+  max-height: 100px;
+  max-width: 100px;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+
+  opacity: 0;
+}
+
+.area1:before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+}
+
 .insertBar {
   width: 6px;
-  height: 60px;
+  height: 80%;
   background-color: black;
 
   position: absolute;
@@ -115,62 +141,46 @@ export default {
 }
 
 .inner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.coinsArea {
-  max-width: 250px;
-
+  width: 80%;
+  
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+}
+
+.coinsArea {
+  width: 100%;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
 }
 
 .item {
-  height: 30px;
-  width: 30px;
+  box-sizing: border-box; /*これがないとはみ出す*/
+  min-height: 30px;
+  min-width: 30px;
   margin-left: 8px;
   border: 3px solid black;
   border-radius: 100px;
   background-color: chocolate;
   color: white;
   font-weight: 600;
+  font-size: 12px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.overarea {
-  height: 100px;
-  width: 100px;
-  background-color: red;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.area1 {
-  height: 90px;
-  width: 90px;
-  opacity: 0;
-
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
 }
 
 .text {
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
 
-    margin: 8px;
+  margin: 8px;
 }
 </style>

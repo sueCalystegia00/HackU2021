@@ -12,7 +12,7 @@ export default {
 <style scoped>
 #Display {
   width: 100%;
-  height: 188.8px;
+  height: calc(40% - 32px);
 
   background-color: #CBB621;
   border: 3px solid black;

@@ -52,7 +52,7 @@ export default {
 <style scoped>
 #AreaToCall {
   width: 100%;
-  height: 188.8px;
+  height: calc(40% - 32px);
   margin-top: 16px;
 
   display: flex;
