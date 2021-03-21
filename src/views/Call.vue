@@ -21,6 +21,7 @@
         {{ connectMethod }}
       </option>
     </select>
+    <p>残り{{availabletime}}秒</p>
 
     <button @click="addTime">10円投下ボタン(仮)</button>
 
@@ -125,9 +126,17 @@ export default {
     talkingmembers: {
       handler: function(){
         if(this.talkingmembers == 1){
-          this.holdaudio.play();
-        }else{
-          this.holdaudio.pause();
+          this.holdaudio.play();  //保留音を再生
+          clearInterval(this.countdowntimer);
+        }else if(this.talkingmembers > 1){
+          this.holdaudio.pause(); //保留音を停止
+          // ルーム参加後から通話可能時間を減らしていく
+          this.countdowntimer = setInterval(
+            function(){
+              this.availabletime--;
+            }.bind(this),
+            1000  //1000ミリ秒間隔で通話可能時間を減らす
+          ); 
         }
       }
     }
@@ -156,7 +165,7 @@ export default {
         stream: this.localStream,
       });
 
-      /* // 5秒だけコール音を再生
+      /* // 5秒だけコール音を再生(したかった)
       const musicPath = require("@/assets/Telephone-Signal_Tone02-1(Ringback).mp3");
       var ringaudio = new Audio(musicPath); // path to file
       ringaudio.play();
@@ -170,13 +179,6 @@ export default {
       // 参加
       this.room.once('open', () => {
         this.talkingmembers++;  // 自分も一人としてカウント
-        // ルーム参加後から通話可能時間を減らしていく
-        this.countdowntimer = setInterval(
-          function(){
-            this.availabletime--;
-          }.bind(this),
-          1000  //1000ミリ秒間隔で通話可能時間を減らす
-        ); 
         console.log("参加しました");
       });
 
@@ -214,6 +216,7 @@ export default {
     leaveroom(){
       if(this.room == null)return;  // 参加していない場合は何もしない
       this.room.close(), { once: true };  // ルームを退出
+      this.holdaudio.pause(); //保留音を停止
       this.talkingmembers = 0;
       this.callNumber = '';
       this.room = null;
