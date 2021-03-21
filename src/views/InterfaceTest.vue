@@ -8,11 +8,12 @@
       </div>
     </div>
     <div class="howToUse">
-        <p>ご利用方法</p>
-        <p>ご利用方法</p>
-        <p>ご利用方法</p>
-        <p>ご利用方法</p>
-        <p>ご利用方法</p>
+        <p class="h1">ご利用方法</p>
+        <p class="mt16">1. 電話番号を正しく入力してください</p>
+        <p class="mt16">2. 硬化投入口に10円を投入してください</p>
+        <p class="mt16">3. 受話器を押下すると通話が始まります</p>
+        <p class="mt16">※10円あたり56秒間の通話ができます</p>
+        <p class="mt16">※10円を投入すると通話時間が延長されます</p>
       </div>
   </div>
 </template>
@@ -83,8 +84,19 @@ export default {
 
 .howToUse {
   width: 100%;
+  padding: 16px;
+
   color: white;
   background-color: #7bc046;
   border-radius: 0 0 10px 10px;
+}
+
+.h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.mt16 {
+  margin-top: 16px;
 }
 </style>
