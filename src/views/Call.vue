@@ -128,19 +128,31 @@ export default {
     // ルーム参加
     joinroom(){
       if(this.availabletime <= 0){
-        console.log("金入れてください");
+        console.log("お金を入れてください");
         return;
       };
       if(this.callNumber.length < 11){
         console.log("11桁の番号を入れてください");
         return;
       }
+
       // ルームの確立
       this.room = this.peer.joinRoom(this.callNumber, {
         mode: this.selectedConnectMethod,
         stream: this.localStream,
       });
-      
+
+      // 5秒だけコール音を再生
+      const musicPath = require("@/assets/Telephone-Signal_Tone02-1(Ringback).mp3");
+      var ringaudio = new Audio(musicPath); // path to file
+      ringaudio.play();
+      setTimeout(
+        function(){
+          ringaudio.pause();
+        },
+        5000
+      );
+
       // 参加
       this.room.once('open', () => {
         // ルーム参加後から通話可能時間を減らしていく
@@ -150,7 +162,7 @@ export default {
           }.bind(this),
           1000  //1000ミリ秒間隔で通話可能時間を減らす
         ); 
-        alert('参加しました');
+        console.log("参加しました");
       });
 
       // ルームに他の新規参加があった場合
