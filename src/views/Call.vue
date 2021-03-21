@@ -1,6 +1,27 @@
 <template>
   <div class="Call">
-    <p>Your peer ID is {{ peerID }}</p>
+    <div class="outer">
+      <div class="inner">
+        <display :inputTellNumber="inputTellNumber" />
+        <insertCoin />
+        <areatocall 
+          @pushnumber="emitEventByPushNumber"
+          @pushcall="emitEventByPushCall"
+        />
+      </div>
+    </div>
+    <div class="howToUse">
+        <p class="h1">ご利用方法</p>
+        <p class="mt16">1. 電話番号を正しく入力してください</p>
+        <p class="mt16">2. 硬化投入口に10円を投入してください</p>
+        <p class="mt16">3. 受話器を押下すると通話が始まります</p>
+        <p class="mt16">※10円あたり56秒間の通話ができます</p>
+        <p class="mt16">※10円を投入すると通話時間が延長されます</p>
+      </div>
+
+
+
+
 
     マイク:
     <select v-model="selectedAudio" @change="onChange">
@@ -11,9 +32,6 @@
     </select>
 
     <div id="remote-streams"></div>
-
-    <input v-model='callNumber' placeholder="input Number">
-    <p>Call Number is: {{ callNumber }}</p>
     
     接続方式:
     <select v-model="selectedConnectMethod">
@@ -25,7 +43,6 @@
 
     <button @click="addTime">10円投下ボタン(仮)</button>
 
-    <button @click="joinroom">発信(ルーム)</button>
     <button @click="leaveroom">退出(ルーム)</button>
 
     <div v-show="this.user.displayName">Your name is {{user.displayName}}</div>
@@ -38,16 +55,25 @@
 <script>
 import firebase from "firebase/app";
 import Peer from 'skyway-js';
+import Display from "../components/Display.vue";
+import AreaToCall from "../components/AreaToCall.vue";
+import InsertCoin from "../components/InsertCoin.vue";
 
 export default {
   name: 'Call',
+
+  components: {
+    display: Display,
+    areatocall: AreaToCall,
+    insertCoin: InsertCoin,
+  },
 
   data(){
     return{
       audios: [], //取得したオーディオデバイスの情報
       selectedAudio: '', // 使用するオーディオデバイス
       peerID: '', // ユーザのpeerID
-      callNumber: '', //電話番号(roomID代わり)
+      inputTellNumber: '', //電話番号(roomID代わり)
       room: null, //参加中のルーム
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
       connectMethods: ['sfu', 'mesh'], //接続方式２択
@@ -101,6 +127,7 @@ export default {
     //自身のPeerID取得
     this.peer.on('open', () => {
       this.peerID = this.peer.id;
+      console.log("My PeerID is " + this.peerID);
     });
 
     // 保留音の設定
@@ -143,27 +170,33 @@ export default {
   },
 
   methods: {
+    
+    emitEventByPushNumber(number) {
+      this.inputTellNumber += number;
+    },
+
     // 10円投下による時間延長
     addTime(){
       this.availabletime += 10; //テスト用に10秒追加
     },
 
     // ルーム参加
-    joinroom(){
+    emitEventByPushCall(){
       if(this.availabletime <= 0){
         console.log("お金を入れてください");
         return;
       };
-      if(this.callNumber.length < 11){
+      if(this.inputTellNumber.length < 11){
         console.log("11桁の番号を入れてください");
         return;
       }
 
       // ルームの確立
-      this.room = this.peer.joinRoom(this.callNumber, {
+      this.room = this.peer.joinRoom(this.inputTellNumber, {
         mode: this.selectedConnectMethod,
         stream: this.localStream,
       });
+      console.log("joined room name is " + this.room.name);
 
       /* // 5秒だけコール音を再生(したかった)
       const musicPath = require("@/assets/Telephone-Signal_Tone02-1(Ringback).mp3");
@@ -218,7 +251,7 @@ export default {
       this.room.close(), { once: true };  // ルームを退出
       this.holdaudio.pause(); //保留音を停止
       this.talkingmembers = 0;
-      this.callNumber = '';
+      this.inputTellNumber = '';
       this.room = null;
       this.removeAudioChildren();
       clearInterval(this.countdowntimer);
@@ -295,3 +328,62 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.Call {
+  width: 100%;
+  height: 100%;
+
+  /*最大をiPhoneに設定*/
+  max-height: 896px;
+  max-width: 414px;
+}
+
+.outer {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  background-color: #7bc046;
+  border-radius: 10px 10px 0 0 ;
+  box-sizing: border-box; /*これがないとはみ出す*/
+
+  display: flex;
+  flex-direction: column;
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+  /*最大をiPhoneに設定*/
+  max-height: 812px;
+
+  padding: 16px;
+  border-radius: 5px;
+  box-sizing: border-box; /*これがないとはみ出す*/
+  background-color: #475d52;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.howToUse {
+  width: 100%;
+  padding: 16px;
+  box-sizing: border-box; /*これがないとはみ出す*/
+
+  color: white;
+  background-color: #7bc046;
+  border-radius: 0 0 10px 10px;
+}
+
+.h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.mt16 {
+  margin-top: 16px;
+}
+</style>
