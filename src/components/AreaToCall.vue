@@ -1,8 +1,8 @@
 <template>
   <div id="AreaToCall">
-    <button id="receiver" @click="call">
+    <div id="receiver" @click="call">
       <img class="callicon" src="@/assets/icon_calling.svg" />
-    </button>
+    </div>
     <div id="keynumbers">
       <button
         v-for="key in keynumbers"
@@ -30,9 +30,9 @@ export default {
     },
     playSound(key) {
       let musicPath;
-      if(key % 2 == 0) {
+      if (key % 2 == 0) {
         musicPath = require("@/assets/Telephone-DTMF01-01(1).mp3");
-      } else if(key % 3 == 0) {
+      } else if (key % 3 == 0) {
         musicPath = require("@/assets/Telephone-DTMF01-02(2).mp3");
       } else {
         musicPath = require("@/assets/Telephone-DTMF01-03(3).mp3");
@@ -51,11 +51,11 @@ export default {
 
 <style scoped>
 #AreaToCall {
-  width: 90%;
-  height: 45%;
-  position: relative;
-  margin: 5%;
+  width: 100%;
+  height: 50%;
+
   display: flex;
+  justify-content: space-between;
 }
 
 #receiver {
@@ -64,6 +64,7 @@ export default {
   background-color: #7bc046;
   border-width: 3px;
   border-radius: 20px;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -74,24 +75,27 @@ export default {
 }
 
 #keynumbers {
-  width: 75%;
+  width: 60%;
   height: 100%;
+
   display: grid;
   grid-template-columns: 33% 33% 33%;
-  margin-left: 5%;
+  justify-content: center;
+  align-items: center;
 }
 
 .keynumber {
-  width: 90%;
-  height: 90%;
-  margin: auto;
+  width: 50px;
+  height: 50px;
   border: 0px;
   border-radius: 50%;
   background-color: #000000;
+  font-weight: bold;
+  font-size: 24px;
+  color: #cbb621;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  color: #cbb621;
 }
 </style>

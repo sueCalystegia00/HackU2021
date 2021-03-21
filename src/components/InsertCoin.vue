@@ -22,7 +22,7 @@
           <div v-for="item in stockCoins" :key="item.id" class="item">10</div>
         </draggable>
 
-        <div class="text">スワイプして10円を投入</div>
+        <div class="text">◀ 10円を投入</div>
       </div>
     </div>
   </div>
@@ -83,7 +83,7 @@ export default {
 .outer {
   width: 100%;
   height: 100px;
-  padding: 0 16px;
+  /*padding: 0 16px;*/
   box-sizing: border-box; /*これがないとはみ出す*/
 
   display: flex;
@@ -92,8 +92,8 @@ export default {
 }
 
 .insertCircle {
-  min-width: 90px;
-  min-height: 90px;
+  min-width: 70px;
+  min-height: 70px;
   border: solid 3px black;
   border-radius: 100px;
   background-color: #c4c4c4;

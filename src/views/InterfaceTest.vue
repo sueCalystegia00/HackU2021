@@ -40,7 +40,6 @@ export default {
   height: 100%;
   /*最大・最小幅をiPhoneに設定*/
   max-width: 414px;
-  max-height: 896px;
   min-width: 320px;
   min-height: 568px;
 }
@@ -51,6 +50,7 @@ export default {
   padding: 16px;
   background-color: #7bc046;
   border-radius: 10px;
+  box-sizing: border-box; /*これがないとはみ出す*/
 
   display: flex;
   flex-direction: column;
