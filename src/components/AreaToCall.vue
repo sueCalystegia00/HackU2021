@@ -52,17 +52,16 @@ export default {
 <style scoped>
 #AreaToCall {
   width: 100%;
-  height: 50%;
+  height: calc(40% - 16px);
 
   display: flex;
   justify-content: space-between;
 }
 
 #receiver {
-  width: 25%;
-  height: 100%;
+  width: 20%;
   background-color: #7bc046;
-  border-width: 3px;
+  border: 3px solid black;
   border-radius: 20px;
 
   display: flex;
@@ -71,22 +70,24 @@ export default {
 }
 
 .callicon {
-  width: 70%;
+  width: 50%;
 }
 
 #keynumbers {
-  width: 60%;
+  width: 65%;
   height: 100%;
 
   display: grid;
+  grid-template-rows: 25% 25% 25% 25%;
   grid-template-columns: 33% 33% 33%;
-  justify-content: center;
-  align-items: center;
+
+  gap: 1px;
 }
 
 .keynumber {
-  width: 50px;
-  height: 50px;
+  height: calc(100% - 2px);
+  width: calc(100% - 2px);
+
   border: 0px;
   border-radius: 50%;
   background-color: #000000;
