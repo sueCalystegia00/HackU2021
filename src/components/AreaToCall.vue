@@ -74,7 +74,7 @@ export default {
 }
 
 #keynumbers {
-  width: 65%;
+  width: 55%;
   height: 100%;
 
   display: grid;
@@ -82,6 +82,32 @@ export default {
   grid-template-columns: 33% 33% 33%;
 
   gap: 1px;
+}
+
+@media screen and (min-width: 321px) {
+  #keynumbers {
+    width: 60%;
+    height: 100%;
+
+    display: grid;
+    grid-template-rows: 25% 25% 25% 25%;
+    grid-template-columns: 33% 33% 33%;
+
+    gap: 1px;
+  }
+}
+
+@media screen and (min-width: 414px) {
+  #keynumbers {
+    width: 55%;
+    height: 100%;
+
+    display: grid;
+    grid-template-rows: 25% 25% 25% 25%;
+    grid-template-columns: 33% 33% 33%;
+
+    gap: 1px;
+  }
 }
 
 .keynumber {
