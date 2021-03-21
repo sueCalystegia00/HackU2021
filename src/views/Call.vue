@@ -21,6 +21,7 @@
         {{ connectMethod }}
       </option>
     </select>
+    <p>残り{{availabletime}}秒</p>
 
     <button @click="addTime">10円投下ボタン(仮)</button>
 
@@ -53,6 +54,8 @@ export default {
       selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
       countdowntimer: '', //カウントダウン用のタイマー
       availabletime: 0, // 通話可能時間
+      talkingmembers: 0,  // 参加人数
+      holdaudio: null,
 
       db: null, // FireSote接続用
       user: null, // userの名前やIDを格納
@@ -100,6 +103,9 @@ export default {
       this.peerID = this.peer.id;
     });
 
+    // 保留音の設定
+    this.holdaudio = new Audio(require("@/assets/Telephone-Music_On_Hold01-1(Salut_dAmour).mp3")); // path to file
+    this.holdaudio.loop = true;
   },
   
   beforeDestroy () {
@@ -116,6 +122,23 @@ export default {
           this.leaveroom();
         }
       },
+    },
+    talkingmembers: {
+      handler: function(){
+        if(this.talkingmembers == 1){
+          this.holdaudio.play();  //保留音を再生
+          clearInterval(this.countdowntimer);
+        }else if(this.talkingmembers > 1){
+          this.holdaudio.pause(); //保留音を停止
+          // ルーム参加後から通話可能時間を減らしていく
+          this.countdowntimer = setInterval(
+            function(){
+              this.availabletime--;
+            }.bind(this),
+            1000  //1000ミリ秒間隔で通話可能時間を減らす
+          ); 
+        }
+      }
     }
   },
 
@@ -128,33 +151,40 @@ export default {
     // ルーム参加
     joinroom(){
       if(this.availabletime <= 0){
-        console.log("金入れてください");
+        console.log("お金を入れてください");
         return;
       };
       if(this.callNumber.length < 11){
         console.log("11桁の番号を入れてください");
         return;
       }
+
       // ルームの確立
       this.room = this.peer.joinRoom(this.callNumber, {
         mode: this.selectedConnectMethod,
         stream: this.localStream,
       });
-      
+
+      /* // 5秒だけコール音を再生(したかった)
+      const musicPath = require("@/assets/Telephone-Signal_Tone02-1(Ringback).mp3");
+      var ringaudio = new Audio(musicPath); // path to file
+      ringaudio.play();
+      setTimeout(
+        function(){
+          ringaudio.pause();
+        },
+        5000
+      ); */
+
       // 参加
       this.room.once('open', () => {
-        // ルーム参加後から通話可能時間を減らしていく
-        this.countdowntimer = setInterval(
-          function(){
-            this.availabletime--;
-          }.bind(this),
-          1000  //1000ミリ秒間隔で通話可能時間を減らす
-        ); 
-        alert('参加しました');
+        this.talkingmembers++;  // 自分も一人としてカウント
+        console.log("参加しました");
       });
 
       // ルームに他の新規参加があった場合
       this.room.on('stream', async stream => {
+        this.talkingmembers++;
         // 取得したストリームを再生する要素の生成
         const newAudio = document.createElement('audio');
         newAudio.srcObject = stream;
@@ -169,6 +199,7 @@ export default {
 
       // ルームから参加者が退出する場合の処理
       this.room.on('peerLeave', peerId => {
+        this.talkingmembers--;
         const remoteAudios = document.getElementById('remote-streams');
         const remoteAudio= remoteAudios.querySelector(
           `[data-peer-id="${peerId}"]`
@@ -185,6 +216,8 @@ export default {
     leaveroom(){
       if(this.room == null)return;  // 参加していない場合は何もしない
       this.room.close(), { once: true };  // ルームを退出
+      this.holdaudio.pause(); //保留音を停止
+      this.talkingmembers = 0;
       this.callNumber = '';
       this.room = null;
       this.removeAudioChildren();
