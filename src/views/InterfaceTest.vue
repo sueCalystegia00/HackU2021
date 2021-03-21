@@ -4,16 +4,16 @@
       <div class="inner">
         <display :inputTellNumber="inputTellNumber" />
         <insertCoin />
-        <areatocall @pushnumber="emitEventByPushNumber"/>
+        <areatocall @pushnumber="emitEventByPushNumber" />
       </div>
-      <div class="howToUse">
-        <p>ご利用方法</p>
-        <p>ご利用方法</p>
-        <p>ご利用方法</p>
-        <p>ご利用方法</p>
-        <p>ご利用方法</p>
-        </div>
     </div>
+    <div class="howToUse">
+        <p>ご利用方法</p>
+        <p>ご利用方法</p>
+        <p>ご利用方法</p>
+        <p>ご利用方法</p>
+        <p>ご利用方法</p>
+      </div>
   </div>
 </template>
 
@@ -27,18 +27,18 @@ export default {
   components: {
     display: Display,
     areatocall: AreaToCall,
-    insertCoin: InsertCoin
+    insertCoin: InsertCoin,
   },
   data() {
     return {
-      inputTellNumber: '',
+      inputTellNumber: "",
     };
   },
-  methods:{
-    emitEventByPushNumber(number){
+  methods: {
+    emitEventByPushNumber(number) {
       this.inputTellNumber += number;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -49,14 +49,16 @@ export default {
   /*最大・最小幅をiPhoneに設定*/
   max-width: 414px;
   min-width: 320px;
+  max-height: 896px;
   min-height: 568px;
 }
 
 .outer {
   width: 100%;
+  height: 100%;
   padding: 16px;
   background-color: #7bc046;
-  border-radius: 10px;
+  border-radius: 10px 10px 0 0 ;
   box-sizing: border-box; /*これがないとはみ出す*/
 
   display: flex;
@@ -65,9 +67,18 @@ export default {
 
 .inner {
   width: 100%;
+  height: 100%;
+  max-height: 646px;
   padding: 16px;
   border-radius: 5px;
   box-sizing: border-box; /*これがないとはみ出す*/
-  background-color: #475D52;
+  background-color: #475d52;
+}
+
+.howToUse {
+  width: 100%;
+  color: white;
+  background-color: #7bc046;
+  border-radius: 0 0 10px 10px;
 }
 </style>
