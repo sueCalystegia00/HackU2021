@@ -7,3 +7,5 @@
     https://otologic.jp/free/se/phone01.html > 電話　プッシュ信号01
   Telephone-Signal_Tone02-1(Ringback)
     https://otologic.jp/free/se/phone01.html > 電話　信号音02
+  Telephone-Music_On_Hold01-1(Salut_dAmour)
+    https://otologic.jp/free/se/phone01.html > 電話 保留音01

@@ -53,6 +53,8 @@ export default {
       selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
       countdowntimer: '', //カウントダウン用のタイマー
       availabletime: 0, // 通話可能時間
+      talkingmembers: 0,  // 参加人数
+      holdaudio: null,
 
       db: null, // FireSote接続用
       user: null, // userの名前やIDを格納
@@ -100,6 +102,9 @@ export default {
       this.peerID = this.peer.id;
     });
 
+    // 保留音の設定
+    this.holdaudio = new Audio(require("@/assets/Telephone-Music_On_Hold01-1(Salut_dAmour).mp3")); // path to file
+    this.holdaudio.loop = true;
   },
   
   beforeDestroy () {
@@ -116,6 +121,15 @@ export default {
           this.leaveroom();
         }
       },
+    },
+    talkingmembers: {
+      handler: function(){
+        if(this.talkingmembers == 1){
+          this.holdaudio.play();
+        }else{
+          this.holdaudio.pause();
+        }
+      }
     }
   },
 
@@ -142,7 +156,7 @@ export default {
         stream: this.localStream,
       });
 
-      // 5秒だけコール音を再生
+      /* // 5秒だけコール音を再生
       const musicPath = require("@/assets/Telephone-Signal_Tone02-1(Ringback).mp3");
       var ringaudio = new Audio(musicPath); // path to file
       ringaudio.play();
@@ -151,10 +165,11 @@ export default {
           ringaudio.pause();
         },
         5000
-      );
+      ); */
 
       // 参加
       this.room.once('open', () => {
+        this.talkingmembers++;  // 自分も一人としてカウント
         // ルーム参加後から通話可能時間を減らしていく
         this.countdowntimer = setInterval(
           function(){
@@ -167,6 +182,7 @@ export default {
 
       // ルームに他の新規参加があった場合
       this.room.on('stream', async stream => {
+        this.talkingmembers++;
         // 取得したストリームを再生する要素の生成
         const newAudio = document.createElement('audio');
         newAudio.srcObject = stream;
@@ -181,6 +197,7 @@ export default {
 
       // ルームから参加者が退出する場合の処理
       this.room.on('peerLeave', peerId => {
+        this.talkingmembers--;
         const remoteAudios = document.getElementById('remote-streams');
         const remoteAudio= remoteAudios.querySelector(
           `[data-peer-id="${peerId}"]`
@@ -197,6 +214,7 @@ export default {
     leaveroom(){
       if(this.room == null)return;  // 参加していない場合は何もしない
       this.room.close(), { once: true };  // ルームを退出
+      this.talkingmembers = 0;
       this.callNumber = '';
       this.room = null;
       this.removeAudioChildren();
