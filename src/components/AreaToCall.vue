@@ -30,6 +30,9 @@ export default {
       this.$emit("pushcall", );
     },
     playSound(key) {
+      const soundEffect = new Audio(); 
+      soundEffect.play();
+
       let musicPath;
       if (key % 2 == 0) {
         musicPath = require("@/assets/Telephone-DTMF01-01(1).mp3");
@@ -38,8 +41,8 @@ export default {
       } else {
         musicPath = require("@/assets/Telephone-DTMF01-03(3).mp3");
       }
-      var audio = new Audio(musicPath); // path to file
-      audio.play();
+      soundEffect.src = musicPath;
+      soundEffect.play();
     },
     inputTelNumberByEmit(key) {
       console.log("input is " + key);
