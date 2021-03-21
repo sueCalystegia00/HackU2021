@@ -47,11 +47,11 @@ export default {
       selectedAudio: '', // 使用するオーディオデバイス
       peerID: '', // ユーザのpeerID
       callNumber: '', //電話番号(roomID代わり)
-      room: null,
+      room: null, //参加中のルーム
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
       connectMethods: ['sfu', 'mesh'], //接続方式２択
       selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
-      countdowntimer: null,
+      countdowntimer: '', //カウントダウン用のタイマー
       availabletime: 0, // 通話可能時間
 
       db: null, // FireSote接続用
@@ -102,13 +102,18 @@ export default {
     });
 
   },
+  
+  beforeDestroy () {
+    clearInterval(this.countdowntimer);
+  },
 
   watch: {
     availabletime: {
+      immediate: true,
       handler: function () {
         console.log("残り " + this.availabletime + "秒");
-        if(this.availabletime = 0 && this.room != null){
-          //this.leaveroom();
+        if(this.availabletime == 0 && this.room != null){
+          this.leaveroom();
         }
       },
     }
@@ -116,12 +121,19 @@ export default {
 
   methods: {
     addTime(){
-      this.availabletime += 5;
-      console.log("addtimeの方 " + this.availabletime + "秒");
+      this.availabletime += 10; //テスト用に10秒追加
     },
 
     // ルーム参加
     joinroom(){
+      if(this.availabletime <= 0){
+        console.log("金入れてください");
+        return;
+      };
+      if(this.callNumber.length < 11){
+        console.log("11桁の番号を入れてください");
+        return;
+      }
       // ルームの確立
       this.room = this.peer.joinRoom(this.callNumber, {
         mode: this.selectedConnectMethod,
@@ -130,7 +142,12 @@ export default {
       
       // 参加
       this.room.once('open', () => {
-        //this.countdowntimer = setInterval(this.availabletime--,1000); //1000ミリ秒間隔で通話可能時間を減らす
+        this.countdowntimer = setInterval(
+          function(){
+            this.availabletime--;
+          }.bind(this),
+          1000  //1000ミリ秒間隔で通話可能時間を減らす
+        ); 
         alert('参加しました');
       });
 
@@ -163,12 +180,13 @@ export default {
 
     // ルーム退出
     leaveroom(){
+      if(this.room == null)return;
       this.room.close(), { once: true };
       this.callNumber = '';
       this.room = null;
       this.removeAudioChildren();
       clearInterval(this.countdowntimer);
-      //this.availabletime = 0;
+      this.availabletime = 0;
       alert("roomから退出しました");
     },
 
