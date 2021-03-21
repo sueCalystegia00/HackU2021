@@ -105,10 +105,11 @@ export default {
 
   watch: {
     availabletime: {
+      immediate: true,
       handler: function () {
         console.log("残り " + this.availabletime + "秒");
-        if(this.availabletime = 0 && this.room != null){
-          //this.leaveroom();
+        if(this.availabletime == 0 && this.room != null){
+          this.leaveroom();
         }
       },
     }
@@ -117,11 +118,18 @@ export default {
   methods: {
     addTime(){
       this.availabletime += 5;
-      console.log("addtimeの方 " + this.availabletime + "秒");
     },
 
     // ルーム参加
     joinroom(){
+      if(this.availabletime <= 0){
+        console.log("金入れてください");
+        return;
+      };
+      if(this.callNumber.length < 11){
+        console.log("11桁の番号を入れてください");
+        return;
+      }
       // ルームの確立
       this.room = this.peer.joinRoom(this.callNumber, {
         mode: this.selectedConnectMethod,
@@ -130,7 +138,7 @@ export default {
       
       // 参加
       this.room.once('open', () => {
-        //this.countdowntimer = setInterval(this.availabletime--,1000); //1000ミリ秒間隔で通話可能時間を減らす
+        this.countdowntimer = setInterval(this.availabletime--,1000); //1000ミリ秒間隔で通話可能時間を減らす
         alert('参加しました');
       });
 
@@ -168,7 +176,7 @@ export default {
       this.room = null;
       this.removeAudioChildren();
       clearInterval(this.countdowntimer);
-      //this.availabletime = 0;
+      this.availabletime = 0;
       alert("roomから退出しました");
     },
 
