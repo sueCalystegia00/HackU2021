@@ -307,9 +307,7 @@ export default {
 
     signOut() {
       this.leaveroom();
-      const audioElm = document.getElementById('my-audio');
-      let stream = audioElm.srcObject;
-      let tracks = stream.getTracks();
+      let tracks = this.localStream.getTracks();
       tracks.forEach(function(track){
         track.stop();
       });
