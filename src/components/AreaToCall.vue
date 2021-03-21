@@ -52,8 +52,7 @@ export default {
 <style scoped>
 #AreaToCall {
   width: 100%;
-  height: calc(40% - 32px);
-  margin-top: 16px;
+  height: calc(40% - 16px);
 
   display: flex;
   justify-content: space-between;
@@ -61,9 +60,8 @@ export default {
 
 #receiver {
   width: 20%;
-  height: 100%;
   background-color: #7bc046;
-  border-width: 3px;
+  border: 3px solid black;
   border-radius: 20px;
 
   display: flex;
@@ -76,19 +74,19 @@ export default {
 }
 
 #keynumbers {
-  width: 50%;
-  min-width: 150px;
+  width: 65%;
+  height: 100%;
 
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-rows: 25% 25% 25% 25%;
+  grid-template-columns: 33% 33% 33%;
 
-  justify-content: center;
-  align-items: center;
+  gap: 1px;
 }
 
 .keynumber {
-  min-width: 45px;
-  min-height: 45px;
+  height: calc(100% - 2px);
+  width: calc(100% - 2px);
 
   border: 0px;
   border-radius: 50%;

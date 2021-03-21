@@ -75,8 +75,7 @@ export default {
 <style scoped>
 #InsertCoin {
   width: 100%;
-  height: calc(20% - 32px);
-  margin-top: 16px;
+  height: calc(20% - 16px);
   overflow: hidden;
 }
 
