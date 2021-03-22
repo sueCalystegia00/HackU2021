@@ -2,7 +2,10 @@
   <div class="Call">
     <div class="outer">
       <div class="inner">
-        <display :inputTellNumber="inputTellNumber" />
+        <display
+          :availableTime="availabletime"
+          :inputTellNumber="inputTellNumber"
+        />
         <insertCoin 
           ref="component_insertCoin"
           @insertcoin="emitEventByInsertCoin" 
@@ -35,19 +38,8 @@
     </select>
 
     <div id="remote-streams"></div>
-    
-    接続方式:
-    <select v-model="selectedConnectMethod">
-      <option v-for="(connectMethod, key, index) in connectMethods" v-bind:key="index">
-        {{ connectMethod }}
-      </option>
-    </select>
-    <p>残り{{availabletime}}秒</p>
 
     <button @click="leaveroom">退出(ルーム)</button>
-
-    <div v-show="this.user.displayName">Your name is {{user.displayName}}</div>
-    <div v-show="this.userCoins">{{userCoins}} coins left</div>
     <button @click="signOut">ログアウト</button>
 
   </div>
@@ -77,8 +69,7 @@ export default {
       inputTellNumber: '', //電話番号(roomID代わり)
       room: null, //参加中のルーム
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
-      connectMethods: ['sfu', 'mesh'], //接続方式２択
-      selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
+      selectedConnectMethod: 'sfu',  //接続方式(default: sfu, meshでも可能)
       countdowntimer: '', //カウントダウン用のタイマー
       availabletime: 0, // 通話可能時間
       talkingmembers: 0,  // 参加人数

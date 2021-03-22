@@ -1,13 +1,17 @@
 <template>
   <div id="Display">
-    <div class="telNUmber">{{ telNUmber(inputTellNumber) }}</div>
+    <div class="telNumber">{{ telNUmber(inputTellNumber) }}</div>
+    <div class="availableTime">残り{{ availableTime }}秒</div>
   </div>
 </template>
 
 <script>
 export default {
   name: "AreaToCall",
-  props: ["inputTellNumber"],
+  props: [
+    "inputTellNumber",
+    "availableTime"
+  ],
   methods: {
     telNUmber(number) {
         const one = number.slice(0, 3);
@@ -33,16 +37,26 @@ export default {
   box-sizing: border-box; /*これがないとはみ出す*/
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.telNUmber {
+.telNumber {
   width: 100%;
 
   font-size: 24px;
   font-weight: 600;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.availableTime {
+  width: 100%;
+  font-size: 12px;
+  font-weight: 600;
   display: flex;
   justify-content: center;
   align-items: center;
