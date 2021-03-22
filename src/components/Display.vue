@@ -2,6 +2,7 @@
   <div id="Display">
     <div class="telNumber">{{ telNUmber(inputTelNumber) }}</div>
     <div class="availableTime">残り{{ availableTime }}秒</div>
+    <div class="talkingMembers">{{ talkingMembers }}人接続中...</div>
 
     マイク:
     <select v-model="selectedAudio" @change="onChange">
@@ -18,7 +19,8 @@ export default {
   name: "AreaToCall",
   props: [
     "inputTelNumber",
-    "availableTime"
+    "availableTime",
+    "talkingMembers"
   ],
 
   data(){

@@ -4,6 +4,7 @@
       <div class="inner">
         <display
           :availableTime="availabletime"
+          :talkingMembers="talkingmembers"
           :inputTelNumber="inputTelNumber"
           :localStream="localStream"
         />
@@ -132,7 +133,6 @@ export default {
     availabletime: {
       immediate: true,
       handler: function () {
-        console.log("残り " + this.availabletime + "秒");
         // ルーム接続中に時間が0になったら退出処理
         if(this.availabletime == 0 && this.room != null){
           this.leaveroom();
