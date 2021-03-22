@@ -5,6 +5,7 @@
         <display
           :availableTime="availabletime"
           :inputTelNumber="inputTelNumber"
+          :localStream="localStream"
         />
         <insertCoin 
           ref="component_insertCoin"

@@ -41,7 +41,7 @@ export default {
     navigator.mediaDevices.getUserMedia({video: false, audio: true})
     .then( stream => {
       // 着信時に相手に返せるように、グローバル変数に保存しておく
-      this.$Call.localStream = stream;
+      this.$parent.localStream = stream;
     }).catch( error => {
       // 失敗時にはエラーログを出力
       console.error('mediaDevice.getUserMedia() error:', error);
@@ -74,7 +74,7 @@ export default {
         video: false
       }
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      this.$Call.localStream = stream;
+      this.$parent.localStream = stream;
     },
   },
 };
