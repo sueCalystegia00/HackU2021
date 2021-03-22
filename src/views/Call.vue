@@ -3,7 +3,10 @@
     <div class="outer">
       <div class="inner">
         <display :inputTellNumber="inputTellNumber" />
-        <insertCoin />
+        <insertCoin 
+          ref="component_insertCoin"
+          @insertcoin="emitEventByInsertCoin" 
+        />
         <areatocall 
           @pushnumber="emitEventByPushNumber"
           @pushcall="emitEventByPushCall"
@@ -40,8 +43,6 @@
       </option>
     </select>
     <p>残り{{availabletime}}秒</p>
-
-    <button @click="addTime">10円投下ボタン(仮)</button>
 
     <button @click="leaveroom">退出(ルーム)</button>
 
@@ -170,14 +171,15 @@ export default {
   },
 
   methods: {
-    
-    emitEventByPushNumber(number) {
-      this.inputTellNumber += number;
+    // 10円投下による時間延長
+    emitEventByInsertCoin(){
+      this.availabletime += 10; //テスト用に10秒追加
+      this.userCoins--; // 所持コインを減らす
+      this.setUserCoins(this.userCoins);  // db更新
     },
 
-    // 10円投下による時間延長
-    addTime(){
-      this.availabletime += 10; //テスト用に10秒追加
+    emitEventByPushNumber(number) {
+      this.inputTellNumber += number;
     },
 
     // ルーム参加
@@ -295,6 +297,14 @@ export default {
       if (q.data()) {
         this.userCoins = q.data().coins;
       }
+      this.$refs.component_insertCoin.createStockCoins(this.userCoins); // InsertCoinコンポーネントにコインを生成させる
+    },
+
+    // dbのコイン枚数更新
+    async setUserCoins(setcoins) {
+      const uid = this.user.uid;
+      const uRef = await this.db.collection("users").doc(uid);
+      uRef.update({coins: setcoins});
     },
 
     async createUser() {

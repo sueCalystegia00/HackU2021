@@ -47,10 +47,11 @@ export default {
     };
   },
   created() {
-    const coins = 5;
+    // createStockCoins(dbCoins)に移動
+    /* const coins = 5;
     for (let i = 0; i < coins; i++) {
       this.stockCoins.push({ id: i, name: `coin${i}` });
-    }
+    } */
   },
   computed: {
     formattedinsertedCoin() {
@@ -64,11 +65,20 @@ export default {
     insertedCoin: {
       handler: function () {
         const musicPath = require("@/assets/register.mp3");
+
+        this.$emit("insertcoin", );
         var sound = new Howl({ src: [musicPath] });
         sound.play();
       },
     },
   },
+  methods: {
+    createStockCoins(dbCoins){  // Callから発火，コインを生成する
+      for (let i = 0; i < dbCoins; i++) {
+        this.stockCoins.push({ id: i, name: `coin${i}` });
+      }
+    }
+  }
 };
 </script>
 
