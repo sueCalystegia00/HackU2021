@@ -175,7 +175,7 @@ export default {
   methods: {
     // 10円投下による時間延長
     emitEventByInsertCoin(){
-      this.availabletime += 10; //テスト用に10秒追加
+      this.availabletime += 56; //テスト用に10秒追加
       this.userCoins--; // 所持コインを減らす
       this.setUserCoins(this.userCoins);  // db更新
     },
