@@ -133,7 +133,8 @@ export default {
     });
 
     // 保留音の設定
-    this.holdaudio = new Howl({ src: [require("@/assets/Telephone-Music_On_Hold01-1(Salut_dAmour).mp3"] }); // path to file
+    const holdaudiopath = require("@/assets/Telephone-Music_On_Hold01-1(Salut_dAmour).mp3");
+    this.holdaudio = new Howl({ src: [holdaudiopath] }); // path to file
     this.holdaudio.loop = true;
   },
   
