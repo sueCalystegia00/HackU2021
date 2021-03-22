@@ -2,6 +2,14 @@
   <div id="Display">
     <div class="telNumber">{{ telNUmber(inputTelNumber) }}</div>
     <div class="availableTime">残り{{ availableTime }}秒</div>
+
+    マイク:
+    <select v-model="selectedAudio" @change="onChange">
+      <option disabled value="">Please select one</option>
+      <option v-for="(audio, key, index) in audios" v-bind:key="index" :value="audio.value">
+        {{ audio.text }}
+      </option>
+    </select>
   </div>
 </template>
 
@@ -12,6 +20,35 @@ export default {
     "inputTelNumber",
     "availableTime"
   ],
+
+  data(){
+    return{
+      audios: [], //取得したオーディオデバイスの情報
+      selectedAudio: '', // 使用するオーディオデバイス
+    }
+  },
+
+  async mounted(){
+    // デバイスへのアクセス
+    const deviceInfos = await navigator.mediaDevices.enumerateDevices();
+
+    // オーディオデバイスの情報を取得
+    deviceInfos
+    .filter(deviceInfo => deviceInfo.kind === 'audioinput')
+    .map(audio => this.audios.push({text: audio.label || `Microphone ${this.audios.length + 1}`, value: audio.deviceId}));
+
+    // ストリーミング生成
+    navigator.mediaDevices.getUserMedia({video: false, audio: true})
+    .then( stream => {
+      // 着信時に相手に返せるように、グローバル変数に保存しておく
+      this.$Call.localStream = stream;
+    }).catch( error => {
+      // 失敗時にはエラーログを出力
+      console.error('mediaDevice.getUserMedia() error:', error);
+      return;
+    });
+  },
+
   methods: {
     telNUmber(number) {
         const one = number.slice(0, 3);
@@ -21,6 +58,23 @@ export default {
         const five = number.slice(7,11);
         const res = one + two + three + four + five;
       return res;
+    },
+
+    // カメラ・オーディオ選択確認
+    onChange(){
+      if(this.selectedAudio != ''){
+        this.connectLocalStream();
+      }
+    },
+
+    // オーディオの反映
+    async connectLocalStream(){
+      const constraints = {
+        audio: this.selectedAudio ? { deviceId: { exact: this.selectedAudio } } : false,
+        video: false
+      }
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      this.$Call.localStream = stream;
     },
   },
 };

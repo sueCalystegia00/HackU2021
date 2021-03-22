@@ -29,13 +29,7 @@
 
 
 
-    マイク:
-    <select v-model="selectedAudio" @change="onChange">
-      <option disabled value="">Please select one</option>
-      <option v-for="(audio, key, index) in audios" v-bind:key="index" :value="audio.value">
-        {{ audio.text }}
-      </option>
-    </select>
+    
 
     <div id="remote-streams"></div>
 
@@ -63,8 +57,8 @@ export default {
 
   data(){
     return{
-      audios: [], //取得したオーディオデバイスの情報
-      selectedAudio: '', // 使用するオーディオデバイス
+      //audios: [], //取得したオーディオデバイスの情報
+      //selectedAudio: '', // 使用するオーディオデバイス
       peerID: '', // ユーザのpeerID
       inputTelNumber: '', //電話番号(roomID代わり)
       room: null, //参加中のルーム
@@ -91,7 +85,7 @@ export default {
   },
 
   async mounted() {
-    // デバイスへのアクセス
+    /* // デバイスへのアクセス
     const deviceInfos = await navigator.mediaDevices.enumerateDevices();
 
     // オーディオデバイスの情報を取得
@@ -108,7 +102,7 @@ export default {
       // 失敗時にはエラーログを出力
       console.error('mediaDevice.getUserMedia() error:', error);
       return;
-    });
+    }); */
 
     // 通信拠点の単位となるオブジェクトのインスタンスを生成
     this.peer = new Peer(this.name,{
@@ -252,22 +246,7 @@ export default {
       alert("roomから退出しました");
     },
 
-    // カメラ・オーディオ選択確認
-    onChange(){
-      if(this.selectedAudio != ''){
-        this.connectLocalStream();
-      }
-    },
-
-    // オーディオの反映
-    async connectLocalStream(){
-      const constraints = {
-        audio: this.selectedAudio ? { deviceId: { exact: this.selectedAudio } } : false,
-        video: false
-      }
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      this.localStream = stream;
-    },
+    
 
     auth() {
       return new Promise((resolve) => {
