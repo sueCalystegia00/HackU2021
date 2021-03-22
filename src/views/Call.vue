@@ -226,6 +226,7 @@ export default {
         const newAudio = document.createElement('audio');
         newAudio.srcObject = stream;
         newAudio.playsInline = true;
+        newAudio.volume = 1.0;  // 音量Max
         newAudio.setAttribute('data-peer-id', stream.peerId);
         const remoteAudios = document.getElementById('remote-streams');
         remoteAudios.append(newAudio);
