@@ -2,7 +2,11 @@
   <div class="Call">
     <div class="outer">
       <div class="inner">
-        <display :inputTellNumber="inputTellNumber" />
+        <display
+          :availableTime="availabletime"
+          :inputTelNumber="inputTelNumber"
+          :localStream="localStream"
+        />
         <insertCoin 
           ref="component_insertCoin"
           @insertcoin="emitEventByInsertCoin" 
@@ -14,40 +18,23 @@
       </div>
     </div>
     <div class="howToUse">
-        <p class="h1">ご利用方法</p>
-        <p class="mt16">1. 電話番号を正しく入力してください</p>
-        <p class="mt16">2. 硬化投入口に10円を投入してください</p>
-        <p class="mt16">3. 受話器を押下すると通話が始まります</p>
-        <p class="mt16">※10円あたり56秒間の通話ができます</p>
-        <p class="mt16">※10円を投入すると通話時間が延長されます</p>
-      </div>
+      <p class="h1">ご利用方法</p>
+      <p class="mt16">1. 電話番号を正しく入力してください</p>
+      <p class="mt16">2. 硬化投入口に10円を投入してください</p>
+      <p class="mt16">3. 受話器を押下すると通話が始まります</p>
+      <p class="mt16">※10円あたり56秒間の通話ができます</p>
+      <p class="mt16">※10円を投入すると通話時間が延長されます</p>
+    </div>
 
 
 
 
 
-    マイク:
-    <select v-model="selectedAudio" @change="onChange">
-      <option disabled value="">Please select one</option>
-      <option v-for="(audio, key, index) in audios" v-bind:key="index" :value="audio.value">
-        {{ audio.text }}
-      </option>
-    </select>
+    
 
     <div id="remote-streams"></div>
-    
-    接続方式:
-    <select v-model="selectedConnectMethod">
-      <option v-for="(connectMethod, key, index) in connectMethods" v-bind:key="index">
-        {{ connectMethod }}
-      </option>
-    </select>
-    <p>残り{{availabletime}}秒</p>
 
     <button @click="leaveroom">退出(ルーム)</button>
-
-    <div v-show="this.user.displayName">Your name is {{user.displayName}}</div>
-    <div v-show="this.userCoins">{{userCoins}} coins left</div>
     <button @click="signOut">ログアウト</button>
 
   </div>
@@ -72,14 +59,13 @@ export default {
 
   data(){
     return{
-      audios: [], //取得したオーディオデバイスの情報
-      selectedAudio: '', // 使用するオーディオデバイス
+      //audios: [], //取得したオーディオデバイスの情報
+      //selectedAudio: '', // 使用するオーディオデバイス
       peerID: '', // ユーザのpeerID
-      inputTellNumber: '', //電話番号(roomID代わり)
+      inputTelNumber: '', //電話番号(roomID代わり)
       room: null, //参加中のルーム
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
-      connectMethods: ['sfu', 'mesh'], //接続方式２択
-      selectedConnectMethod: 'sfu',  //選択した接続方式(default: sfu)
+      selectedConnectMethod: 'sfu',  //接続方式(default: sfu, meshでも可能)
       countdowntimer: '', //カウントダウン用のタイマー
       availabletime: 0, // 通話可能時間
       talkingmembers: 0,  // 参加人数
@@ -101,7 +87,7 @@ export default {
   },
 
   async mounted() {
-    // デバイスへのアクセス
+    /* // デバイスへのアクセス
     const deviceInfos = await navigator.mediaDevices.enumerateDevices();
 
     // オーディオデバイスの情報を取得
@@ -118,7 +104,7 @@ export default {
       // 失敗時にはエラーログを出力
       console.error('mediaDevice.getUserMedia() error:', error);
       return;
-    });
+    }); */
 
     // 通信拠点の単位となるオブジェクトのインスタンスを生成
     this.peer = new Peer(this.name,{
@@ -181,7 +167,7 @@ export default {
     },
 
     emitEventByPushNumber(number) {
-      this.inputTellNumber += number;
+      this.inputTelNumber += number;
     },
 
     // ルーム参加
@@ -190,13 +176,13 @@ export default {
         console.log("お金を入れてください");
         return;
       };
-      if(this.inputTellNumber.length < 11){
+      if(this.inputTelNumber.length < 11){
         console.log("11桁の番号を入れてください");
         return;
       }
 
       // ルームの確立
-      this.room = this.peer.joinRoom(this.inputTellNumber, {
+      this.room = this.peer.joinRoom(this.inputTelNumber, {
         mode: this.selectedConnectMethod,
         stream: this.localStream,
       });
@@ -256,7 +242,7 @@ export default {
       this.room.close(), { once: true };  // ルームを退出
       this.holdaudio.pause(); //保留音を停止
       this.talkingmembers = 0;
-      this.inputTellNumber = '';
+      this.inputTelNumber = '';
       this.room = null;
       this.removeAudioChildren();
       clearInterval(this.countdowntimer);
@@ -264,22 +250,7 @@ export default {
       alert("roomから退出しました");
     },
 
-    // カメラ・オーディオ選択確認
-    onChange(){
-      if(this.selectedAudio != ''){
-        this.connectLocalStream();
-      }
-    },
-
-    // オーディオの反映
-    async connectLocalStream(){
-      const constraints = {
-        audio: this.selectedAudio ? { deviceId: { exact: this.selectedAudio } } : false,
-        video: false
-      }
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      this.localStream = stream;
-    },
+    
 
     auth() {
       return new Promise((resolve) => {
