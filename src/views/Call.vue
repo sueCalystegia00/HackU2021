@@ -14,6 +14,7 @@
           @insertcoin="emitEventByInsertCoin"
         />
         <areatocall
+          :isTalking = "istalking"
           @pushnumber="emitEventByPushNumber"
           @pushcall="emitEventByPushCall"
         />
@@ -30,7 +31,6 @@
 
     <div id="remote-streams"></div>
 
-    <button @click="leaveroom">退出(ルーム)</button>
     <button @click="signOut">ログアウト</button>
   </div>
 </template>
@@ -116,16 +116,11 @@ export default {
     },
     talkingmembers: {
       handler: function () {
-        if(this.talkingmembers == 0){
-          this.istalking = false;
-        }
-        else if (this.talkingmembers == 1) {
-          this.istalking = true;
+        if (this.talkingmembers == 1) {
           this.holdaudio.play(); //保留音を再生
           clearInterval(this.countdowntimer);
         }
         else if (this.talkingmembers > 1) {
-          this.istalking = true;
           this.holdaudio.pause(); //保留音を停止
           // ルーム参加後から通話可能時間を減らしていく
           this.countdowntimer = setInterval(
@@ -150,24 +145,17 @@ export default {
     emitEventByPushNumber(number) {
       this.inputTelNumber += number;
     },
-
-    joinRoom() {
-      // 参加
-      this.room.once("open", () => {
-        this.talkingmembers++; // 自分も一人としてカウント
-        console.log("参加しました");
-      });
-    },
-
-    wait(sec) {
-      return new Promise((resolve, reject) => {
-        setTimeout(resolve, sec * 1000);
-        //setTimeout(() => {reject(new Error("エラー！"))}, sec*1000);
-      });
+    
+    emitEventByPushCall(){
+      if(!this.istalking){
+        this.joinRoom();
+      }else{
+        this.leaveroom();
+      }
     },
 
     // ルーム参加
-    async emitEventByPushCall(){
+    async joinRoom() {
       if(this.availabletime <= 0){
         this.$refs.component_display.messageOnDisplay("お金を入れてください"); // displayに表示
         return;
@@ -176,6 +164,8 @@ export default {
         this.$refs.component_display.messageOnDisplay("11桁入力してください"); // displayに表示
         return;
       }
+
+      this.istalking = true;
 
       // 5秒だけコール音を再生(したかった)
       const musicPath = require("@/assets/Telephone-Signal_Tone02-1(Ringback).mp3");
@@ -192,7 +182,12 @@ export default {
         stream: this.localStream,
       });
       console.log("joined room name is " + this.room.name);
-      this.joinRoom();
+      
+      // 参加
+      this.room.once("open", () => {
+        this.talkingmembers++; // 自分も一人としてカウント
+        console.log("参加しました");
+      });
 
       // ルームに他の新規参加があった場合
       this.room.on("stream", async (stream) => {
@@ -229,6 +224,7 @@ export default {
     leaveroom() {
       if (this.room == null) return; // 参加していない場合は何もしない
       this.room.close(), { once: true }; // ルームを退出
+      this.istalking = false;
       this.holdaudio.pause(); //保留音を停止
       this.talkingmembers = 0;
       this.inputTelNumber = "";
@@ -237,6 +233,13 @@ export default {
       clearInterval(this.countdowntimer);
       this.availabletime = 0;
       this.$refs.component_display.messageOnDisplay("自分が退出しました"); // displayに表示
+    },
+
+    wait(sec) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, sec * 1000);
+        //setTimeout(() => {reject(new Error("エラー！"))}, sec*1000);
+      });
     },
 
     auth() {

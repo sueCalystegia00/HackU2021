@@ -1,6 +1,8 @@
 # 完全フリー(再配布は禁止)
   icon_calling.svg
     https://icooon-mono.com/11706-%E3%82%B3%E3%83%BC%E3%83%AA%E3%83%B3%E3%82%B0%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B3/
+  icon_stopcalling.svg
+    https://icooon-mono.com/11699-%e5%85%ac%e8%a1%86%e9%9b%bb%e8%a9%b1%e3%81%ae%e7%b7%9a%e7%94%bb%e3%82%a2%e3%82%a4%e3%82%b3%e3%83%b3/
 
 # クレジット必要(https://otologic.jp/free/license.html)
   Telephone-DTMF01-01(1) ~ (3) 
