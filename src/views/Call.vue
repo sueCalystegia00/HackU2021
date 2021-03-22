@@ -8,11 +8,11 @@
           :inputTelNumber="inputTelNumber"
           :localStream="localStream"
         />
-        <insertCoin 
+        <insertCoin
           ref="component_insertCoin"
-          @insertcoin="emitEventByInsertCoin" 
+          @insertcoin="emitEventByInsertCoin"
         />
-        <areatocall 
+        <areatocall
           @pushnumber="emitEventByPushNumber"
           @pushcall="emitEventByPushCall"
         />
@@ -27,30 +27,23 @@
       <p class="mt16">※10円を投入すると通話時間が延長されます</p>
     </div>
 
-
-
-
-
-    
-
     <div id="remote-streams"></div>
 
     <button @click="leaveroom">退出(ルーム)</button>
     <button @click="signOut">ログアウト</button>
-
   </div>
 </template>
 
 <script>
 import firebase from "firebase/app";
-import Peer from 'skyway-js';
-import { Howl, Howler} from 'howler';
+import Peer from "skyway-js";
+import { Howl, Howler } from "howler";
 import Display from "../components/Display.vue";
 import AreaToCall from "../components/AreaToCall.vue";
 import InsertCoin from "../components/InsertCoin.vue";
 
 export default {
-  name: 'Call',
+  name: "Call",
 
   components: {
     display: Display,
@@ -58,24 +51,24 @@ export default {
     insertCoin: InsertCoin,
   },
 
-  data(){
-    return{
+  data() {
+    return {
       //audios: [], //取得したオーディオデバイスの情報
       //selectedAudio: '', // 使用するオーディオデバイス
-      peerID: '', // ユーザのpeerID
-      inputTelNumber: '', //電話番号(roomID代わり)
+      peerID: "", // ユーザのpeerID
+      inputTelNumber: "", //電話番号(roomID代わり)
       room: null, //参加中のルーム
-      localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
-      selectedConnectMethod: 'sfu',  //接続方式(default: sfu, meshでも可能)
-      countdowntimer: '', //カウントダウン用のタイマー
+      localStream: null, // 相手に送る自身のビデオ・オーディオ情報
+      selectedConnectMethod: "sfu", //接続方式(default: sfu, meshでも可能)
+      countdowntimer: "", //カウントダウン用のタイマー
       availabletime: 0, // 通話可能時間
-      talkingmembers: 0,  // 参加人数
+      talkingmembers: 0, // 参加人数
       holdaudio: null,
 
       db: null, // FireSote接続用
       user: null, // userの名前やIDを格納
       userCoins: null, // ユーザのコイン残り枚数
-    }
+    };
   },
 
   async created() {
@@ -83,8 +76,8 @@ export default {
     await this.auth();
     await this.getUserCoins();
     await this.createUser();
-    console.log(this.userCoins)
-    console.log(this.user.uid)
+    console.log(this.userCoins);
+    console.log(this.user.uid);
   },
 
   async mounted() {
@@ -108,13 +101,13 @@ export default {
     }); */
 
     // 通信拠点の単位となるオブジェクトのインスタンスを生成
-    this.peer = new Peer(this.name,{
-      key: process.env.VUE_APP_SKYWAY_KEY,  // APIkey
-      debug: 3  // ログの出力レベル．3の場合は開発用に全てのログを出力する．
-    })
+    this.peer = new Peer(this.name, {
+      key: process.env.VUE_APP_SKYWAY_KEY, // APIkey
+      debug: 3, // ログの出力レベル．3の場合は開発用に全てのログを出力する．
+    });
 
     //自身のPeerID取得
-    this.peer.on('open', () => {
+    this.peer.on("open", () => {
       this.peerID = this.peer.id;
       console.log("My PeerID is " + this.peerID);
     });
@@ -124,8 +117,8 @@ export default {
     this.holdaudio = new Howl({ src: [holdaudiopath] }); // path to file
     this.holdaudio.loop = true;
   },
-  
-  beforeDestroy () {
+
+  beforeDestroy() {
     clearInterval(this.countdowntimer);
   },
 
@@ -134,52 +127,76 @@ export default {
       immediate: true,
       handler: function () {
         // ルーム接続中に時間が0になったら退出処理
-        if(this.availabletime == 0 && this.room != null){
+        if (this.availabletime == 0 && this.room != null) {
           this.leaveroom();
         }
       },
     },
     talkingmembers: {
-      handler: function(){
-        if(this.talkingmembers == 1){
-          this.holdaudio.play();  //保留音を再生
+      handler: function () {
+        if (this.talkingmembers == 1) {
+          this.holdaudio.play(); //保留音を再生
           clearInterval(this.countdowntimer);
-        }else if(this.talkingmembers > 1){
+        } else if (this.talkingmembers > 1) {
           this.holdaudio.pause(); //保留音を停止
           // ルーム参加後から通話可能時間を減らしていく
           this.countdowntimer = setInterval(
-            function(){
+            function () {
               this.availabletime--;
             }.bind(this),
-            1000  //1000ミリ秒間隔で通話可能時間を減らす
-          ); 
+            1000 //1000ミリ秒間隔で通話可能時間を減らす
+          );
         }
-      }
-    }
+      },
+    },
   },
 
   methods: {
     // 10円投下による時間延長
-    emitEventByInsertCoin(){
+    emitEventByInsertCoin() {
       this.availabletime += 56; //テスト用に10秒追加
       this.userCoins--; // 所持コインを減らす
-      this.setUserCoins(this.userCoins);  // db更新
+      this.setUserCoins(this.userCoins); // db更新
     },
 
     emitEventByPushNumber(number) {
       this.inputTelNumber += number;
     },
 
+    joinRoom() {
+      // 参加
+      this.room.once("open", () => {
+        this.talkingmembers++; // 自分も一人としてカウント
+        console.log("参加しました");
+      });
+    },
+
+    wait(sec) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, sec * 1000);
+        //setTimeout(() => {reject(new Error("エラー！"))}, sec*1000);
+      });
+    },
+
     // ルーム参加
-    emitEventByPushCall(){
-      if(this.availabletime <= 0){
+    async emitEventByPushCall() {
+      if (this.availabletime <= 0) {
         console.log("お金を入れてください");
         return;
-      };
-      if(this.inputTelNumber.length < 11){
+      }
+      if (this.inputTelNumber.length < 11) {
         console.log("11桁の番号を入れてください");
         return;
       }
+
+      // 5秒だけコール音を再生(したかった)
+      const musicPath = require("@/assets/Telephone-Signal_Tone02-1(Ringback).mp3");
+      var ringaudio = new Audio(musicPath); // path to file
+      ringaudio.play();
+
+      await this.wait(5);
+      console.log("hello!");
+      ringaudio.pause();
 
       // ルームの確立
       this.room = this.peer.joinRoom(this.inputTelNumber, {
@@ -187,34 +204,18 @@ export default {
         stream: this.localStream,
       });
       console.log("joined room name is " + this.room.name);
-
-      /* // 5秒だけコール音を再生(したかった)
-      const musicPath = require("@/assets/Telephone-Signal_Tone02-1(Ringback).mp3");
-      var ringaudio = new Audio(musicPath); // path to file
-      ringaudio.play();
-      setTimeout(
-        function(){
-          ringaudio.pause();
-        },
-        5000
-      ); */
-
-      // 参加
-      this.room.once('open', () => {
-        this.talkingmembers++;  // 自分も一人としてカウント
-        console.log("参加しました");
-      });
+      this.joinRoom();
 
       // ルームに他の新規参加があった場合
-      this.room.on('stream', async stream => {
+      this.room.on("stream", async (stream) => {
         this.talkingmembers++;
         // 取得したストリームを再生する要素の生成
-        const newAudio = document.createElement('audio');
+        const newAudio = document.createElement("audio");
         newAudio.srcObject = stream;
         newAudio.playsInline = true;
-        newAudio.volume = 1.0;  // 音量Max
-        newAudio.setAttribute('data-peer-id', stream.peerId);
-        const remoteAudios = document.getElementById('remote-streams');
+        newAudio.volume = 1.0; // 音量Max
+        newAudio.setAttribute("data-peer-id", stream.peerId);
+        const remoteAudios = document.getElementById("remote-streams");
         remoteAudios.append(newAudio);
         await newAudio.play().catch(console.error);
 
@@ -222,13 +223,13 @@ export default {
       });
 
       // ルームから参加者が退出する場合の処理
-      this.room.on('peerLeave', peerId => {
+      this.room.on("peerLeave", (peerId) => {
         this.talkingmembers--;
-        const remoteAudios = document.getElementById('remote-streams');
-        const remoteAudio= remoteAudios.querySelector(
+        const remoteAudios = document.getElementById("remote-streams");
+        const remoteAudio = remoteAudios.querySelector(
           `[data-peer-id="${peerId}"]`
         );
-        remoteAudio.srcObject.getTracks().forEach(track => track.stop());
+        remoteAudio.srcObject.getTracks().forEach((track) => track.stop());
         remoteAudio.srcObject = null;
         remoteAudio.remove();
 
@@ -237,20 +238,18 @@ export default {
     },
 
     // ルーム退出
-    leaveroom(){
-      if(this.room == null)return;  // 参加していない場合は何もしない
-      this.room.close(), { once: true };  // ルームを退出
+    leaveroom() {
+      if (this.room == null) return; // 参加していない場合は何もしない
+      this.room.close(), { once: true }; // ルームを退出
       this.holdaudio.pause(); //保留音を停止
       this.talkingmembers = 0;
-      this.inputTelNumber = '';
+      this.inputTelNumber = "";
       this.room = null;
       this.removeAudioChildren();
       clearInterval(this.countdowntimer);
       this.availabletime = 0;
       alert("roomから退出しました");
     },
-
-    
 
     auth() {
       return new Promise((resolve) => {
@@ -278,37 +277,37 @@ export default {
     async setUserCoins(setcoins) {
       const uid = this.user.uid;
       const uRef = await this.db.collection("users").doc(uid);
-      uRef.update({coins: setcoins});
+      uRef.update({ coins: setcoins });
     },
 
     async createUser() {
       if (this.userCoins) {
         return;
       }
-      await this.db.collection("users").doc(this.user.uid).set({'coins': 5});
+      await this.db.collection("users").doc(this.user.uid).set({ coins: 5 });
       this.userCoins = 5;
     },
 
     signOut() {
       this.leaveroom();
       let tracks = this.localStream.getTracks();
-      tracks.forEach(function(track){
+      tracks.forEach(function (track) {
         track.stop();
       });
       firebase.auth().signOut(); //サインアウト
     },
 
     // 参加者のAudioタグを消す
-    removeAudioChildren(){
-      const remoteAudios = document.getElementById('remote-streams');
-      Array.from(remoteAudios.children).forEach(remoteAudio => {
-        remoteAudio.srcObject.getTracks().forEach(track => track.stop());
+    removeAudioChildren() {
+      const remoteAudios = document.getElementById("remote-streams");
+      Array.from(remoteAudios.children).forEach((remoteAudio) => {
+        remoteAudio.srcObject.getTracks().forEach((track) => track.stop());
         remoteAudio.srcObject = null;
         remoteAudio.remove();
       });
-    }
+    },
   },
-}
+};
 </script>
 
 <style scoped>
@@ -326,7 +325,7 @@ export default {
   height: 100%;
   padding: 16px;
   background-color: #7bc046;
-  border-radius: 10px 10px 0 0 ;
+  border-radius: 10px 10px 0 0;
   box-sizing: border-box; /*これがないとはみ出す*/
 
   display: flex;
