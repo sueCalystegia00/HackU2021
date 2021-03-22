@@ -62,6 +62,11 @@ export default {
       return res;
     },
 
+    messageOnDisplay(message){
+      const instanceMessage = "message on display is " + message;
+      return instanceMessage;
+    },
+
     // カメラ・オーディオ選択確認
     onChange(){
       if(this.selectedAudio != ''){

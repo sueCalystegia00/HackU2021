@@ -3,6 +3,7 @@
     <div class="outer">
       <div class="inner">
         <display
+          ref="component_display"
           :availableTime="availabletime"
           :talkingMembers="talkingmembers"
           :inputTelNumber="inputTelNumber"
@@ -51,12 +52,10 @@ export default {
     insertCoin: InsertCoin,
   },
 
-  data() {
-    return {
-      //audios: [], //取得したオーディオデバイスの情報
-      //selectedAudio: '', // 使用するオーディオデバイス
-      peerID: "", // ユーザのpeerID
-      inputTelNumber: "", //電話番号(roomID代わり)
+  data(){
+    return{
+      peerID: '', // ユーザのpeerID
+      inputTelNumber: '', //電話番号(roomID代わり)
       room: null, //参加中のルーム
       localStream: null, // 相手に送る自身のビデオ・オーディオ情報
       selectedConnectMethod: "sfu", //接続方式(default: sfu, meshでも可能)
@@ -81,24 +80,6 @@ export default {
   },
 
   async mounted() {
-    /* // デバイスへのアクセス
-    const deviceInfos = await navigator.mediaDevices.enumerateDevices();
-
-    // オーディオデバイスの情報を取得
-    deviceInfos
-    .filter(deviceInfo => deviceInfo.kind === 'audioinput')
-    .map(audio => this.audios.push({text: audio.label || `Microphone ${this.audios.length + 1}`, value: audio.deviceId}));
-
-    // ストリーミング生成
-    navigator.mediaDevices.getUserMedia({video: false, audio: true})
-    .then( stream => {
-      // 着信時に相手に返せるように、グローバル変数に保存しておく
-      this.localStream = stream;
-    }).catch( error => {
-      // 失敗時にはエラーログを出力
-      console.error('mediaDevice.getUserMedia() error:', error);
-      return;
-    }); */
 
     // 通信拠点の単位となるオブジェクトのインスタンスを生成
     this.peer = new Peer(this.name, {
@@ -179,13 +160,13 @@ export default {
     },
 
     // ルーム参加
-    async emitEventByPushCall() {
-      if (this.availabletime <= 0) {
-        console.log("お金を入れてください");
+    emitEventByPushCall(){
+      if(this.availabletime <= 0){
+        this.$refs.component_display.messageOnDisplay("お金を入れてください"); // displayに表示
         return;
-      }
-      if (this.inputTelNumber.length < 11) {
-        console.log("11桁の番号を入れてください");
+      };
+      if(this.inputTelNumber.length < 11){
+        this.$refs.component_display.messageOnDisplay("11桁入力してください"); // displayに表示
         return;
       }
 
@@ -218,22 +199,22 @@ export default {
         const remoteAudios = document.getElementById("remote-streams");
         remoteAudios.append(newAudio);
         await newAudio.play().catch(console.error);
-
-        alert(stream.peerId + "さんが参加しました");
+        this.talkingmembers++;
+        this.$refs.component_display.messageOnDisplay(stream.peerID + "さんが参加しました"); // displayに表示
       });
 
       // ルームから参加者が退出する場合の処理
-      this.room.on("peerLeave", (peerId) => {
-        this.talkingmembers--;
-        const remoteAudios = document.getElementById("remote-streams");
-        const remoteAudio = remoteAudios.querySelector(
+      this.room.on('peerLeave', peerId => {
+        const remoteAudios = document.getElementById('remote-streams');
+        const remoteAudio= remoteAudios.querySelector(
           `[data-peer-id="${peerId}"]`
         );
         remoteAudio.srcObject.getTracks().forEach((track) => track.stop());
         remoteAudio.srcObject = null;
         remoteAudio.remove();
 
-        alert(peerId + "さんが退出しました");
+        this.talkingmembers--;
+        this.$refs.component_display.messageOnDisplay(peerID + "さんが退出しました"); // displayに表示
       });
     },
 
@@ -248,7 +229,7 @@ export default {
       this.removeAudioChildren();
       clearInterval(this.countdowntimer);
       this.availabletime = 0;
-      alert("roomから退出しました");
+      this.$refs.component_display.messageOnDisplay("自分が退出しました"); // displayに表示
     },
 
     auth() {
