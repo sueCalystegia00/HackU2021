@@ -27,11 +27,10 @@
       <p class="mt16">3. 受話器を押下すると通話が始まります</p>
       <p class="mt16">※10円あたり56秒間の通話ができます</p>
       <p class="mt16">※10円を投入すると通話時間が延長されます</p>
+      <button class="logoutButton" @click="signOut">ログアウト</button>
     </div>
 
     <div id="remote-streams"></div>
-
-    <button @click="signOut">ログアウト</button>
   </div>
 </template>
 
@@ -356,5 +355,19 @@ export default {
 
 .mt16 {
   margin-top: 16px;
+}
+
+.logoutButton {
+  margin-top: 64px;
+
+  height: 56px;
+  width: 100%;
+
+  border: 3px solid black;
+  border-radius: 100px;
+  background-color: #d64242e7;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
 }
 </style>
