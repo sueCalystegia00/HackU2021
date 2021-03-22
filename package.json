@@ -13,6 +13,7 @@
     "firebaseui-ja": "^1.0.0",
     "skyway-js": "^4.4.0",
     "vue": "^2.6.11",
+    "vue-howler": "^0.7.0",
     "vue-router": "^3.2.0",
     "vuedraggable": "^2.24.3"
   },
@@ -20,6 +21,7 @@
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "howler": "^2.2.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11"
