@@ -174,8 +174,8 @@ export default {
     // 10円投下による時間延長
     emitEventByInsertCoin(){
       this.availabletime += 10; //テスト用に10秒追加
-      this.userCoins--;
-      this.setUserCoins();
+      this.userCoins--; // 所持コインを減らす
+      this.setUserCoins(this.userCoins);  // db更新
     },
 
     emitEventByPushNumber(number) {
@@ -300,10 +300,11 @@ export default {
       this.$refs.component_insertCoin.createStockCoins(this.userCoins); // InsertCoinコンポーネントにコインを生成させる
     },
 
-    async setUserCoins() {
+    // dbのコイン枚数更新
+    async setUserCoins(setcoins) {
       const uid = this.user.uid;
       const uRef = await this.db.collection("users").doc(uid);
-      uRef.update({coins: this.userCoins});
+      uRef.update({coins: setcoins});
     },
 
     async createUser() {
