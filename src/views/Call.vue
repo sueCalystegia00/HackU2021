@@ -3,6 +3,7 @@
     <div class="outer">
       <div class="inner">
         <display
+          ref="component_display"
           :availableTime="availabletime"
           :talkingMembers="talkingmembers"
           :inputTelNumber="inputTelNumber"
@@ -153,11 +154,11 @@ export default {
     // ルーム参加
     emitEventByPushCall(){
       if(this.availabletime <= 0){
-        console.log("お金を入れてください");
+        this.$refs.component_display.messageOnDisplay("お金を入れてください"); // displayに表示
         return;
       };
       if(this.inputTelNumber.length < 11){
-        console.log("11桁の番号を入れてください");
+        this.$refs.component_display.messageOnDisplay("11桁入力してください"); // displayに表示
         return;
       }
 
@@ -182,12 +183,11 @@ export default {
       // 参加
       this.room.once('open', () => {
         this.talkingmembers++;  // 自分も一人としてカウント
-        console.log("参加しました");
+        this.$refs.component_display.messageOnDisplay("自分が参加しました"); // displayに表示
       });
 
       // ルームに他の新規参加があった場合
       this.room.on('stream', async stream => {
-        this.talkingmembers++;
         // 取得したストリームを再生する要素の生成
         const newAudio = document.createElement('audio');
         newAudio.srcObject = stream;
@@ -197,13 +197,12 @@ export default {
         const remoteAudios = document.getElementById('remote-streams');
         remoteAudios.append(newAudio);
         await newAudio.play().catch(console.error);
-
-        alert(stream.peerId + "さんが参加しました");
+        this.talkingmembers++;
+        this.$refs.component_display.messageOnDisplay(stream.peerID + "さんが参加しました"); // displayに表示
       });
 
       // ルームから参加者が退出する場合の処理
       this.room.on('peerLeave', peerId => {
-        this.talkingmembers--;
         const remoteAudios = document.getElementById('remote-streams');
         const remoteAudio= remoteAudios.querySelector(
           `[data-peer-id="${peerId}"]`
@@ -212,7 +211,8 @@ export default {
         remoteAudio.srcObject = null;
         remoteAudio.remove();
 
-        alert(peerId + "さんが退出しました");
+        this.talkingmembers--;
+        this.$refs.component_display.messageOnDisplay(peerID + "さんが退出しました"); // displayに表示
       });
     },
 
@@ -227,10 +227,8 @@ export default {
       this.removeAudioChildren();
       clearInterval(this.countdowntimer);
       this.availabletime = 0;
-      alert("roomから退出しました");
+      this.$refs.component_display.messageOnDisplay("自分が退出しました"); // displayに表示
     },
-
-    
 
     auth() {
       return new Promise((resolve) => {
