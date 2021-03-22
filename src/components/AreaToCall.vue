@@ -1,7 +1,12 @@
 <template>
   <div id="AreaToCall">
-    <div id="receiver" @click="callByEmit">
-      <img class="callicon" src="@/assets/icon_calling.svg" />
+    <div 
+      class="receiver"
+      v-bind:class="{talking : isTalking}"
+      @click="callByEmit"
+    >
+      <img v-show="!isTalking" class="callicon" src="@/assets/icon_calling.svg" />
+      <img v-show="isTalking" class="callicon" src="@/assets/icon_stopcalling.svg" />
     </div>
     <div id="keynumbers">
       <button
@@ -26,6 +31,10 @@ export default {
     Howl: Howl
   },
 
+  props: {
+    isTalking: Boolean,
+  },
+
   data() {
     return {
       keynumbers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "＊", "0", "♯"],
@@ -33,10 +42,9 @@ export default {
   },
   methods: {
     callByEmit() {
-      console.log("発信");
       this.$emit("pushcall");
     },
-    
+
     playSound(key) {
       let musicPath;
       if (key % 2 == 0) {
@@ -68,7 +76,7 @@ export default {
   justify-content: space-between;
 }
 
-#receiver {
+.receiver {
   width: 20%;
   background-color: #7bc046;
   border: 3px solid black;
@@ -77,6 +85,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.talking{
+  background-color: #d64242e7;
 }
 
 .callicon {
