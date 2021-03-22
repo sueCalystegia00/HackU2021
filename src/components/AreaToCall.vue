@@ -17,7 +17,12 @@
 </template>
 
 <script>
+import { Howl, Howler} from 'howler';
+
 export default {
+  components: {
+    Howl: Howl
+  },
   name: "AreaToCall",
   data() {
     return {
@@ -27,12 +32,9 @@ export default {
   methods: {
     callByEmit() {
       console.log("発信");
-      this.$emit("pushcall", );
+      this.$emit("pushcall");
     },
     playSound(key) {
-      const soundEffect = new Audio(); 
-      soundEffect.play();
-
       let musicPath;
       if (key % 2 == 0) {
         musicPath = require("@/assets/Telephone-DTMF01-01(1).mp3");
@@ -41,8 +43,8 @@ export default {
       } else {
         musicPath = require("@/assets/Telephone-DTMF01-03(3).mp3");
       }
-      soundEffect.src = musicPath;
-      soundEffect.play();
+      var sound = new Howl({ src: [musicPath] });
+      sound.play();
     },
     inputTelNumberByEmit(key) {
       console.log("input is " + key);

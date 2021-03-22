@@ -65,9 +65,10 @@ export default {
     insertedCoin: {
       handler: function () {
         const musicPath = require("@/assets/register.mp3");
-        var audio = new Audio(musicPath); // path to file
-        audio.play();
+
         this.$emit("insertcoin", );
+        var sound = new Howl({ src: [musicPath] });
+        sound.play();
       },
     },
   },
@@ -150,7 +151,7 @@ export default {
 
 .inner {
   width: 80%;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -159,7 +160,7 @@ export default {
 
 .coinsArea {
   width: 100%;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
