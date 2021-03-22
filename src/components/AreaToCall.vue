@@ -20,10 +20,12 @@
 import { Howl, Howler} from 'howler';
 
 export default {
+  name: "AreaToCall",
+
   components: {
     Howl: Howl
   },
-  name: "AreaToCall",
+
   data() {
     return {
       keynumbers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "＊", "0", "♯"],
@@ -34,6 +36,7 @@ export default {
       console.log("発信");
       this.$emit("pushcall");
     },
+    
     playSound(key) {
       let musicPath;
       if (key % 2 == 0) {
@@ -46,6 +49,7 @@ export default {
       var sound = new Howl({ src: [musicPath] });
       sound.play();
     },
+
     inputTelNumberByEmit(key) {
       console.log("input is " + key);
       this.$emit("pushnumber", key);

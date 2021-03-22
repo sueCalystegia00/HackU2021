@@ -63,6 +63,7 @@ export default {
       availabletime: 0, // 通話可能時間
       talkingmembers: 0, // 参加人数
       holdaudio: null,
+      istalking: false, // 自身が会話中か
 
       db: null, // FireSote接続用
       user: null, // userの名前やIDを格納
@@ -115,10 +116,16 @@ export default {
     },
     talkingmembers: {
       handler: function () {
-        if (this.talkingmembers == 1) {
+        if(this.talkingmembers == 0){
+          this.istalking = false;
+        }
+        else if (this.talkingmembers == 1) {
+          this.istalking = true;
           this.holdaudio.play(); //保留音を再生
           clearInterval(this.countdowntimer);
-        } else if (this.talkingmembers > 1) {
+        }
+        else if (this.talkingmembers > 1) {
+          this.istalking = true;
           this.holdaudio.pause(); //保留音を停止
           // ルーム参加後から通話可能時間を減らしていく
           this.countdowntimer = setInterval(
