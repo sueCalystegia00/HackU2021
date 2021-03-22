@@ -60,8 +60,6 @@ export default {
 
   data(){
     return{
-      //audios: [], //取得したオーディオデバイスの情報
-      //selectedAudio: '', // 使用するオーディオデバイス
       peerID: '', // ユーザのpeerID
       inputTelNumber: '', //電話番号(roomID代わり)
       room: null, //参加中のルーム
@@ -88,24 +86,6 @@ export default {
   },
 
   async mounted() {
-    /* // デバイスへのアクセス
-    const deviceInfos = await navigator.mediaDevices.enumerateDevices();
-
-    // オーディオデバイスの情報を取得
-    deviceInfos
-    .filter(deviceInfo => deviceInfo.kind === 'audioinput')
-    .map(audio => this.audios.push({text: audio.label || `Microphone ${this.audios.length + 1}`, value: audio.deviceId}));
-
-    // ストリーミング生成
-    navigator.mediaDevices.getUserMedia({video: false, audio: true})
-    .then( stream => {
-      // 着信時に相手に返せるように、グローバル変数に保存しておく
-      this.localStream = stream;
-    }).catch( error => {
-      // 失敗時にはエラーログを出力
-      console.error('mediaDevice.getUserMedia() error:', error);
-      return;
-    }); */
 
     // 通信拠点の単位となるオブジェクトのインスタンスを生成
     this.peer = new Peer(this.name,{
