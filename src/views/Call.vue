@@ -173,7 +173,6 @@ export default {
       ringaudio.play();
 
       await this.wait(5);
-      console.log("hello!");
       ringaudio.pause();
 
       // ルームの確立
