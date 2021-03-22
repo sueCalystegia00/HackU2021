@@ -56,6 +56,7 @@
 <script>
 import firebase from "firebase/app";
 import Peer from 'skyway-js';
+import { Howl, Howler} from 'howler';
 import Display from "../components/Display.vue";
 import AreaToCall from "../components/AreaToCall.vue";
 import InsertCoin from "../components/InsertCoin.vue";
@@ -132,7 +133,7 @@ export default {
     });
 
     // 保留音の設定
-    this.holdaudio = new Audio(require("@/assets/Telephone-Music_On_Hold01-1(Salut_dAmour).mp3")); // path to file
+    this.holdaudio = new Howl({ src: [require("@/assets/Telephone-Music_On_Hold01-1(Salut_dAmour).mp3"] }); // path to file
     this.holdaudio.loop = true;
   },
   
