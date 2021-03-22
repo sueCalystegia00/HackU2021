@@ -8,7 +8,7 @@
 html,
 body,
 #app {
-  /*font-family: 'Noto Sans JP', sans-serif, 'Avenir', Helvetica, Arial, sans-serif;*/
+  font-family: 'Noto Sans JP', sans-serif, 'Avenir', Helvetica, Arial, sans-serif;
   height: 100%;
   width: 100%;
   margin: 0;
