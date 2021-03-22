@@ -4,7 +4,7 @@
       <div class="inner">
         <display
           :availableTime="availabletime"
-          :inputTellNumber="inputTellNumber"
+          :inputTelNumber="inputTelNumber"
         />
         <insertCoin 
           ref="component_insertCoin"
@@ -66,7 +66,7 @@ export default {
       audios: [], //取得したオーディオデバイスの情報
       selectedAudio: '', // 使用するオーディオデバイス
       peerID: '', // ユーザのpeerID
-      inputTellNumber: '', //電話番号(roomID代わり)
+      inputTelNumber: '', //電話番号(roomID代わり)
       room: null, //参加中のルーム
       localStream: null,  // 相手に送る自身のビデオ・オーディオ情報
       selectedConnectMethod: 'sfu',  //接続方式(default: sfu, meshでも可能)
@@ -170,7 +170,7 @@ export default {
     },
 
     emitEventByPushNumber(number) {
-      this.inputTellNumber += number;
+      this.inputTelNumber += number;
     },
 
     // ルーム参加
@@ -179,13 +179,13 @@ export default {
         console.log("お金を入れてください");
         return;
       };
-      if(this.inputTellNumber.length < 11){
+      if(this.inputTelNumber.length < 11){
         console.log("11桁の番号を入れてください");
         return;
       }
 
       // ルームの確立
-      this.room = this.peer.joinRoom(this.inputTellNumber, {
+      this.room = this.peer.joinRoom(this.inputTelNumber, {
         mode: this.selectedConnectMethod,
         stream: this.localStream,
       });
@@ -244,7 +244,7 @@ export default {
       this.room.close(), { once: true };  // ルームを退出
       this.holdaudio.pause(); //保留音を停止
       this.talkingmembers = 0;
-      this.inputTellNumber = '';
+      this.inputTelNumber = '';
       this.room = null;
       this.removeAudioChildren();
       clearInterval(this.countdowntimer);

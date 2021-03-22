@@ -1,6 +1,6 @@
 <template>
   <div id="Display">
-    <div class="telNumber">{{ telNUmber(inputTellNumber) }}</div>
+    <div class="telNumber">{{ telNUmber(inputTelNumber) }}</div>
     <div class="availableTime">残り{{ availableTime }}秒</div>
   </div>
 </template>
@@ -9,7 +9,7 @@
 export default {
   name: "AreaToCall",
   props: [
-    "inputTellNumber",
+    "inputTelNumber",
     "availableTime"
   ],
   methods: {
