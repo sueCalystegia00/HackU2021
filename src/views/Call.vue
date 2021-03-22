@@ -160,7 +160,7 @@ export default {
     },
 
     // ルーム参加
-    emitEventByPushCall(){
+    async emitEventByPushCall(){
       if(this.availabletime <= 0){
         this.$refs.component_display.messageOnDisplay("お金を入れてください"); // displayに表示
         return;

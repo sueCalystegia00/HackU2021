@@ -64,6 +64,7 @@ export default {
 
     messageOnDisplay(message){
       const instanceMessage = "message on display is " + message;
+      console.log(instanceMessage);
       return instanceMessage;
     },
 
