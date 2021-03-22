@@ -40,6 +40,9 @@ export default {
   components: {
     draggable: vuedraggable,
   },
+  props:{
+    availableCoins: Number, // Callからコイン残数を受け取るため
+  },
   data() {
     return {
       insertedCoin: [],
@@ -66,6 +69,7 @@ export default {
         const musicPath = require("@/assets/register.mp3");
         var audio = new Audio(musicPath); // path to file
         audio.play();
+        this.$emit("insertcoin", );
       },
     },
   },

@@ -3,7 +3,10 @@
     <div class="outer">
       <div class="inner">
         <display :inputTellNumber="inputTellNumber" />
-        <insertCoin />
+        <insertCoin 
+          :availableCoins="userCoins" 
+          @insertcoin="emitEventByInsertCoin" 
+        />
         <areatocall 
           @pushnumber="emitEventByPushNumber"
           @pushcall="emitEventByPushCall"
@@ -40,8 +43,6 @@
       </option>
     </select>
     <p>残り{{availabletime}}秒</p>
-
-    <button @click="addTime">10円投下ボタン(仮)</button>
 
     <button @click="leaveroom">退出(ルーム)</button>
 
@@ -170,14 +171,13 @@ export default {
   },
 
   methods: {
-    
-    emitEventByPushNumber(number) {
-      this.inputTellNumber += number;
+    // 10円投下による時間延長
+    emitEventByInsertCoin(){
+      this.availabletime += 10; //テスト用に10秒追加
     },
 
-    // 10円投下による時間延長
-    addTime(){
-      this.availabletime += 10; //テスト用に10秒追加
+    emitEventByPushNumber(number) {
+      this.inputTellNumber += number;
     },
 
     // ルーム参加
