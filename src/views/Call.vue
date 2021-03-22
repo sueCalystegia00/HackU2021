@@ -56,6 +56,7 @@
 <script>
 import firebase from "firebase/app";
 import Peer from 'skyway-js';
+import { Howl, Howler} from 'howler';
 import Display from "../components/Display.vue";
 import AreaToCall from "../components/AreaToCall.vue";
 import InsertCoin from "../components/InsertCoin.vue";
@@ -132,7 +133,8 @@ export default {
     });
 
     // 保留音の設定
-    this.holdaudio = new Audio(require("@/assets/Telephone-Music_On_Hold01-1(Salut_dAmour).mp3")); // path to file
+    const holdaudiopath = require("@/assets/Telephone-Music_On_Hold01-1(Salut_dAmour).mp3");
+    this.holdaudio = new Howl({ src: [holdaudiopath] }); // path to file
     this.holdaudio.loop = true;
   },
   
@@ -173,7 +175,7 @@ export default {
   methods: {
     // 10円投下による時間延長
     emitEventByInsertCoin(){
-      this.availabletime += 10; //テスト用に10秒追加
+      this.availabletime += 56; //テスト用に10秒追加
       this.userCoins--; // 所持コインを減らす
       this.setUserCoins(this.userCoins);  // db更新
     },
@@ -224,6 +226,7 @@ export default {
         const newAudio = document.createElement('audio');
         newAudio.srcObject = stream;
         newAudio.playsInline = true;
+        newAudio.volume = 1.0;  // 音量Max
         newAudio.setAttribute('data-peer-id', stream.peerId);
         const remoteAudios = document.getElementById('remote-streams');
         remoteAudios.append(newAudio);
