@@ -40,9 +40,6 @@ export default {
   components: {
     draggable: vuedraggable,
   },
-  props:{
-    availableCoins: Number, // Callからコイン残数を受け取るため
-  },
   data() {
     return {
       insertedCoin: [],
@@ -50,10 +47,11 @@ export default {
     };
   },
   created() {
-    const coins = 5;
+    // createStockCoins(dbCoins)に移動
+    /* const coins = 5;
     for (let i = 0; i < coins; i++) {
       this.stockCoins.push({ id: i, name: `coin${i}` });
-    }
+    } */
   },
   computed: {
     formattedinsertedCoin() {
@@ -73,6 +71,13 @@ export default {
       },
     },
   },
+  methods: {
+    createStockCoins(dbCoins){  // Callから発火，コインを生成する
+      for (let i = 0; i < dbCoins; i++) {
+        this.stockCoins.push({ id: i, name: `coin${i}` });
+      }
+    }
+  }
 };
 </script>
 

@@ -4,7 +4,7 @@
       <div class="inner">
         <display :inputTellNumber="inputTellNumber" />
         <insertCoin 
-          :availableCoins="userCoins" 
+          ref="component_insertCoin"
           @insertcoin="emitEventByInsertCoin" 
         />
         <areatocall 
@@ -295,6 +295,7 @@ export default {
       if (q.data()) {
         this.userCoins = q.data().coins;
       }
+      this.$refs.component_insertCoin.createStockCoins(this.userCoins); // InsertCoinコンポーネントにコインを生成させる
     },
 
     async createUser() {
