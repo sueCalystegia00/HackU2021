@@ -169,17 +169,6 @@ export default {
       });
       console.log("joined room name is " + this.room.name);
 
-      /* // 5秒だけコール音を再生(したかった)
-      const musicPath = require("@/assets/Telephone-Signal_Tone02-1(Ringback).mp3");
-      var ringaudio = new Audio(musicPath); // path to file
-      ringaudio.play();
-      setTimeout(
-        ()=>{
-          ringaudio.pause();
-        },
-        5000
-      );  */
-
       // 参加
       this.room.once('open', () => {
         this.talkingmembers++;  // 自分も一人としてカウント
