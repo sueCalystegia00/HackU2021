@@ -143,7 +143,7 @@ export default {
     },
 
     emitEventByPushNumber(number) {
-      this.inputTelNumber += number;
+      if(this.inputTelNumber.length<11)this.inputTelNumber += number;
     },
     
     emitEventByPushCall(){
