@@ -100,6 +100,7 @@ export default {
   },
 
   beforeDestroy() {
+    this.peer.destroy();
     clearInterval(this.countdowntimer);
   },
 
@@ -222,6 +223,7 @@ export default {
     leaveroom(state) {
       if (this.room == null) return; // 参加していない場合は何もしない
       this.room.close(), { once: true }; // ルームを退出
+      clearInterval(this.countdowntimer);
 
       //発火条件に応じて音声再生
       let musicPath;
@@ -245,7 +247,6 @@ export default {
       this.inputTelNumber = "";
       this.room = null;
       this.removeAudioChildren();
-      clearInterval(this.countdowntimer);
       this.availabletime = 0;
       this.$refs.component_display.messageOnDisplay("通話から退出しました"); // displayに表示
     },
