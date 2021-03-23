@@ -75,8 +75,8 @@ export default {
     await this.auth();
     await this.getUserCoins();
     await this.createUser();
-    console.log(this.userCoins);
-    console.log(this.user.uid);
+    console.log("You have " + this.userCoins + " coins.");
+    console.log("Your acountID is " + this.user.uid);
   },
 
   async mounted() {
@@ -143,7 +143,7 @@ export default {
     },
 
     emitEventByPushNumber(number) {
-      this.inputTelNumber += number;
+      if(this.inputTelNumber.length<11)this.inputTelNumber += number;
     },
     
     emitEventByPushCall(){
@@ -184,13 +184,13 @@ export default {
       
       // 参加
       this.room.once("open", () => {
-        this.talkingmembers++; // 自分も一人としてカウント
+        this.talkingmembers = this.room.members.length + 1;
         console.log("参加しました");
       });
 
       // ルームに他の新規参加があった場合
       this.room.on("stream", async (stream) => {
-        this.talkingmembers++;
+        this.talkingmembers = this.room.members.length + 1
         // 取得したストリームを再生する要素の生成
         const newAudio = document.createElement("audio");
         newAudio.srcObject = stream;
@@ -200,7 +200,6 @@ export default {
         const remoteAudios = document.getElementById("remote-streams");
         remoteAudios.append(newAudio);
         await newAudio.play().catch(console.error);
-        this.talkingmembers++;
         this.$refs.component_display.messageOnDisplay(stream.peerID + "さんが参加しました"); // displayに表示
       });
 
@@ -214,7 +213,7 @@ export default {
         remoteAudio.srcObject = null;
         remoteAudio.remove();
 
-        this.talkingmembers--;
+        this.talkingmembers = this.room.members.length + 1
         this.$refs.component_display.messageOnDisplay(peerID + "さんが退出しました"); // displayに表示
       });
     },
