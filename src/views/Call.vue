@@ -109,7 +109,7 @@ export default {
       handler: function () {
         // ルーム接続中に時間が0になったら退出処理
         if (this.availabletime == 0 && this.room != null) {
-          this.leaveroom();
+          this.leaveroom("timeup");
         }
       },
     },
@@ -149,7 +149,7 @@ export default {
       if(!this.istalking){
         this.joinRoom();
       }else{
-        this.leaveroom();
+        this.leaveroom("hangup");
       }
     },
 
@@ -219,9 +219,23 @@ export default {
     },
 
     // ルーム退出
-    leaveroom() {
+    leaveroom(state) {
       if (this.room == null) return; // 参加していない場合は何もしない
       this.room.close(), { once: true }; // ルームを退出
+      
+      //発火条件に応じて音声再生
+      let musicPath;
+      if(state=="timeup"){
+        musicPath = require("@/assets/Telephone-Signal_Tone02-2(Busy).mp3");
+      }else if(state=="hangup"){
+        musicPath = require("@/assets/Telephone-Signal_Tone02-3(Noise).mp3");
+        //musicPath = require("@/assets/Rotary_Phone-Hardware01-7(Receiver-Hang_Up).mp3");
+      }else if(state=="signout"){
+        musicPath = require("@/assets/OpenTheDoor1.mp3");
+      }
+      var sound = new Howl({ src: [musicPath] });
+      sound.play();
+
       this.istalking = false;
       this.holdaudio.pause(); //保留音を停止
       this.talkingmembers = 0;
@@ -278,7 +292,7 @@ export default {
     },
 
     signOut() {
-      this.leaveroom();
+      this.leaveroom("signout");
       let tracks = this.localStream.getTracks();
       tracks.forEach(function (track) {
         track.stop();
