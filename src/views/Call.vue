@@ -100,6 +100,7 @@ export default {
   },
 
   beforeDestroy() {
+    this.peer.destroy();
     clearInterval(this.countdowntimer);
   },
 
@@ -222,7 +223,8 @@ export default {
     leaveroom(state) {
       if (this.room == null) return; // 参加していない場合は何もしない
       this.room.close(), { once: true }; // ルームを退出
-      
+      clearInterval(this.countdowntimer);
+
       //発火条件に応じて音声再生
       let musicPath;
       if(state=="timeup"){
@@ -231,7 +233,10 @@ export default {
         musicPath = require("@/assets/Telephone-Signal_Tone02-3(Noise).mp3");
         //musicPath = require("@/assets/Rotary_Phone-Hardware01-7(Receiver-Hang_Up).mp3");
       }else if(state=="signout"){
-        musicPath = require("@/assets/OpenTheDoor1.mp3");
+        //musicPath = require("@/assets/OpenTheDoor1.mp3");
+      }else{
+        console.log("予期せぬ呼び出しです")
+        return;
       }
       var sound = new Howl({ src: [musicPath] });
       sound.play();
@@ -242,9 +247,8 @@ export default {
       this.inputTelNumber = "";
       this.room = null;
       this.removeAudioChildren();
-      clearInterval(this.countdowntimer);
       this.availabletime = 0;
-      this.$refs.component_display.messageOnDisplay("自分が退出しました"); // displayに表示
+      this.$refs.component_display.messageOnDisplay("通話から退出しました"); // displayに表示
     },
 
     wait(sec) {
