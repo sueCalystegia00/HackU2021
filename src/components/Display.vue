@@ -5,6 +5,7 @@
       <img
         class="deleteIcon"
         src="../assets/バックスペースの削除アイコン.svg"
+        @click="deleteNumber"
       />
     </div>
      <transition name="fade">
@@ -132,6 +133,10 @@ export default {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       this.$parent.localStream = stream;
     },
+
+    deleteNumber() {
+      this.$emit("deleteNumber");
+    }
   },
 };
 </script>
