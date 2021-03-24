@@ -8,6 +8,7 @@
           :talkingMembers="talkingmembers"
           :inputTelNumber="inputTelNumber"
           :localStream="localStream"
+          @deleteNumber="deleteNumber"
         />
         <insertCoin
           ref="component_insertCoin"
@@ -143,7 +144,11 @@ export default {
     },
 
     emitEventByPushNumber(number) {
-      if(this.inputTelNumber.length<11)this.inputTelNumber += number;
+      if(this.inputTelNumber.length<11) this.inputTelNumber += number;
+    },
+
+    deleteNumber() {
+      if(this.inputTelNumber.length > 0) this.inputTelNumber = this.inputTelNumber.slice(0, -1);
     },
     
     emitEventByPushCall(){

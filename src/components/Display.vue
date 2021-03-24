@@ -5,6 +5,7 @@
       <img
         class="deleteIcon"
         src="../assets/バックスペースの削除アイコン.svg"
+        @click="deleteNumber"
       />
     </div>
      <transition name="fade">
@@ -132,6 +133,10 @@ export default {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       this.$parent.localStream = stream;
     },
+
+    deleteNumber() {
+      this.$emit("deleteNumber");
+    }
   },
 };
 </script>
@@ -172,7 +177,7 @@ export default {
   font-weight: 600;
 
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -199,7 +204,7 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .message {
