@@ -28,6 +28,7 @@
       <p class="mt16">3. 受話器を押下すると通話が始まります</p>
       <p class="mt16">※10円あたり56秒間の通話ができます</p>
       <p class="mt16">※10円を投入すると通話時間が延長されます</p>
+      <p class="mt16">音源はオトロジック様(CC BY 4.0)からお借りしました</p>
       <button class="logoutButton" @click="signOut">ログアウト</button>
     </div>
 
