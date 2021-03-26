@@ -146,4 +146,9 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
+.keynumber:active {
+  opacity: 0.6;
+}
+
 </style>
