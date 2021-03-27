@@ -22,7 +22,7 @@
           <div v-for="item in stockCoins" :key="item.id" class="item">10</div>
         </draggable>
 
-        <div class="text">◀ 10円を投入</div>
+        <div class="text">◀ 10円をスワイプして投入</div>
       </div>
     </div>
   </div>
